@@ -3,216 +3,356 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>สุขสันต์วันเกิดนะ แกงส้ม 🪿✨</title>
+<title>HBD แกงส้ม 🪿✨</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&family=Itim&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   สุขสันต์วันเกิดแกงส้ม 🪿 — ธีม "ดวงอาทิตย์ของวันจันทร์"
-   จันทร์ (เบล) × อาทิตย์ (แกงส้ม) · เหลือง-ส้ม-แดง
+   HBD แกงส้ม — "FROM NIGHT TO DAWN" (cinematic / cool)
+   จันทร์เย็น ๆ → ปลุกพระอาทิตย์เพลิง · โทนดำ ทอง ฟ้าน้ำแข็ง
    ============================================================ */
 :root{
-  --night-0:#0a0e27;--night-1:#141a3d;--night-2:#2a1f4d;
-  --sun:#ffd54a;--sun-2:#ff9f43;--red:#ff5b6e;--peach:#ffd9b0;
-  --ink:#4a3528;--cream:#fff7ec;--text:#fff;
+  --bg-0:#05060f; --bg-1:#0a0c1c; --bg-2:#10132a; --bg-3:#171a38;
+  --ice:#8fd0ff; --ice-dim:#5b7fc0;
+  --gold:#ffc14d; --amber:#ff8a3d; --ember:#ff5e3a;
+  --text:#eef2ff; --dim:#8b93b4;
+  --dawn-0:#140a28; --dawn-1:#4a1d3a; --dawn-2:#a83b2e; --dawn-3:#ff7f2e; --dawn-4:#ffc24d;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;
   -webkit-user-select:none;user-select:none}
 html,body{height:100%;overflow:hidden}
-body{font-family:'Mali',system-ui,sans-serif;color:var(--text);position:fixed;inset:0;
-  background:var(--night-0);transition:background 2.5s ease}
-body.day{background:linear-gradient(180deg,#ffe29a 0%, #ffb86b 42%, #ff8e9e 78%, #ff6f87 100%)}
-canvas#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+body{font-family:'Kanit',system-ui,sans-serif;color:var(--text);position:fixed;inset:0;
+  background:
+    radial-gradient(62% 44% at 50% -6%, rgba(120,180,255,.12), transparent 60%),
+    radial-gradient(66% 50% at 50% 116%, rgba(255,140,60,.10), transparent 62%),
+    radial-gradient(42% 40% at 16% 28%, rgba(90,110,220,.16), transparent),
+    linear-gradient(180deg,var(--bg-0) 0%, var(--bg-1) 44%, var(--bg-2) 74%, var(--bg-3) 100%);
+  transition:background 3s ease}
+body.day{
+  background:linear-gradient(184deg,var(--dawn-0) 0%, var(--dawn-1) 26%, var(--dawn-2) 54%, var(--dawn-3) 82%, var(--dawn-4) 100%)}
 
-.stage{position:fixed;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;padding:26px;text-align:center}
-.scene{display:none;flex-direction:column;align-items:center;gap:6px;animation:pop .6s ease;max-width:560px;width:100%}
+canvas#sky{position:fixed;inset:0;width:100%;height:100%;z-index:1}
+#dayLayer{position:fixed;inset:0;z-index:0;opacity:0;pointer-events:none;transition:opacity .15s linear;
+  background:linear-gradient(184deg,var(--dawn-0) 0%,var(--dawn-1) 26%,var(--dawn-2) 54%,var(--dawn-3) 82%,var(--dawn-4) 100%)}
+.grain{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.vignette{position:fixed;inset:0;z-index:2;pointer-events:none;
+  box-shadow:inset 0 0 240px rgba(0,0,10,.8), inset 0 -60px 140px rgba(255,120,60,.05)}
+
+.stage{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:58px 26px 40px;text-align:center;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.scene{display:none;flex-direction:column;align-items:center;gap:12px;max-width:560px;width:100%;
+  margin:auto 0;animation:enter .9s cubic-bezier(.16,1,.3,1)}
 .scene.on{display:flex}
-@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes enter{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 
-/* ---------- ฉากเปิด ---------- */
-#s_intro .moon{width:120px;height:120px;border-radius:50%;position:relative;cursor:pointer;
-  background:radial-gradient(circle at 36% 32%,#fff,#e7ecff 55%,#b9c3ef);
-  box-shadow:0 0 50px rgba(200,210,255,.6), inset -12px -8px 24px rgba(120,130,190,.35);
-  animation:floaty 4s ease-in-out infinite}
-#s_intro .moon .face{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-size:40px;filter:saturate(.9)}
-@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
-.titlebig{font-weight:700;font-size:clamp(26px,7vw,40px);text-shadow:0 2px 20px rgba(0,0,0,.3);margin-top:18px}
-.sub{font-family:'Itim',cursive;font-size:clamp(15px,4.2vw,19px);opacity:.92;margin-top:4px}
-.tap-hint{font-family:'Itim',cursive;margin-top:20px;font-size:15px;opacity:.85;animation:blink 1.6s infinite}
-@keyframes blink{0%,100%{opacity:.4}50%{opacity:1}}
+/* ---------- ตัวอักษร ---------- */
+.kicker{font-family:'Kanit',sans-serif;font-weight:500;letter-spacing:1px;font-size:13px;
+  color:var(--gold);opacity:.95}
+.title{font-family:'Kanit',sans-serif;font-weight:700;font-size:clamp(30px,8.4vw,54px);line-height:1.14;
+  letter-spacing:-.3px;text-shadow:0 6px 40px rgba(0,0,0,.6)}
+.title .em{color:var(--gold);text-shadow:0 0 34px rgba(255,170,60,.65), 0 0 2px rgba(255,200,100,.5)}
+.divider{display:flex;align-items:center;justify-content:center;gap:12px;width:160px;margin:4px 0}
+.divider::before,.divider::after{content:"";height:1px;flex:1;
+  background:linear-gradient(90deg,transparent,rgba(255,193,77,.55))}
+.divider::after{transform:scaleX(-1)}
+.divider span{color:var(--gold);font-size:11px}
+.sub{font-family:'Kanit';font-weight:300;font-size:clamp(15px,4vw,18px);line-height:1.7;
+  color:var(--dim);max-width:23em}
+.tap-hint{font-family:'Kanit';font-weight:400;margin-top:14px;font-size:14px;letter-spacing:.5px;
+  color:var(--ice);opacity:.9}
 
-/* ดวงอาทิตย์ (ลาก/แตะให้ขึ้น) */
-#s_sun .sunwrap{position:relative;width:200px;height:200px;margin:8px auto}
-.sun{width:170px;height:170px;border-radius:50%;position:absolute;left:50%;bottom:0;transform:translateX(-50%);
-  background:radial-gradient(circle at 40% 36%,#fff6cf,#ffd54a 50%,#ff9f43 100%);
-  box-shadow:0 0 60px rgba(255,170,70,.7), 0 0 120px rgba(255,120,80,.45)}
-.sun .duck{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:58px}
-.rays{position:absolute;left:50%;bottom:0;width:260px;height:260px;transform:translateX(-50%);
-  animation:spin 22s linear infinite;opacity:.0;transition:opacity 1s}
-.rays.show{opacity:.7}
-@keyframes spin{to{transform:translateX(-50%) rotate(360deg)}}
-.pulltrack{width:min(80vw,320px);height:8px;border-radius:10px;background:rgba(255,255,255,.25);
-  margin:14px auto 0;position:relative}
-.pullfill{height:100%;width:0;border-radius:10px;background:linear-gradient(90deg,var(--sun),var(--red))}
-.pulllabel{font-family:'Itim',cursive;margin-top:10px;font-size:15px;opacity:.9}
+/* ---------- พระจันทร์ (เย็น เท่) ---------- */
+.moonwrap{position:relative;width:178px;height:178px;cursor:pointer;margin-bottom:12px;touch-action:none}
+.moon-charge{position:absolute;inset:-9px;border-radius:50%;z-index:1;pointer-events:none;opacity:0;
+  transition:opacity .2s;
+  background:conic-gradient(var(--gold) var(--p,0%), rgba(255,255,255,.07) 0);
+  -webkit-mask:radial-gradient(circle,transparent 59%,#000 61%);
+  mask:radial-gradient(circle,transparent 59%,#000 61%)}
+.moonwrap.charging .moon-charge{opacity:1}
+.moon-ring{position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(143,208,255,.3);
+  box-shadow:0 0 54px rgba(143,208,255,.2), inset 0 0 26px rgba(143,208,255,.1)}
+.moon-ring.o2{inset:-24px;border-color:rgba(143,208,255,.12)}
+.moon{position:absolute;inset:20px;border-radius:50%;
+  background:radial-gradient(circle at 37% 30%,#ffffff 0%,#dce7ff 48%,#aab6da 80%,#8a96bc 100%);
+  box-shadow:0 0 76px rgba(140,185,255,.5), inset -18px -14px 36px rgba(50,70,120,.45),
+    inset 10px 10px 22px rgba(255,255,255,.55)}
+.moon .crater{position:absolute;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,rgba(120,140,190,0),rgba(90,110,160,.35))}
+.moon .c1{width:28px;height:28px;top:32px;left:42px}
+.moon .c2{width:17px;height:17px;bottom:40px;right:48px}
+.moon .c3{width:12px;height:12px;top:86px;left:36px}
+.moon .c4{width:10px;height:10px;top:48px;right:40px}
 
-/* ---------- เค้ก ---------- */
-.cake{position:relative;width:230px;height:170px;margin:6px auto}
-.plate{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:230px;height:26px;border-radius:50%;
-  background:radial-gradient(circle,#fff,#ffe3c4);box-shadow:0 10px 24px rgba(0,0,0,.25)}
-.tier{position:absolute;left:50%;transform:translateX(-50%);border-radius:16px}
-.tier.b{bottom:18px;width:190px;height:70px;background:linear-gradient(180deg,#ff9fb2,#ff6f87)}
-.tier.t{bottom:80px;width:140px;height:54px;background:linear-gradient(180deg,#ffe29a,#ffc85c)}
-.icing{position:absolute;left:50%;transform:translateX(-50%);height:16px;border-radius:12px;background:#fff7ec}
-.icing.b{bottom:78px;width:196px}.icing.t{bottom:130px;width:146px}
-.candle{position:absolute;bottom:130px;width:7px;height:30px;border-radius:3px;
-  background:repeating-linear-gradient(45deg,#ff6f87 0 6px,#fff 6px 12px)}
-.flame{position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:12px;height:18px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
-  background:radial-gradient(circle at 50% 70%,#fff3b0,#ffb13b 55%,#ff7a2f);box-shadow:0 0 14px rgba(255,160,60,.9);
-  animation:flick .4s ease-in-out infinite alternate;transform-origin:bottom center}
-@keyframes flick{from{transform:translateX(-50%) rotate(-6deg) scaleY(.92)}to{transform:translateX(-50%) rotate(6deg) scaleY(1.06)}}
+/* ---------- ดวงอาทิตย์ (เพลิง อลังการ) ---------- */
+.sunwrap{position:relative;width:260px;height:252px;margin:6px auto}
+/* ดวงอาทิตย์จริง: แกนขาวร้อน + เรืองแสงฟุ้ง + แสงพุ่งนุ่มจากใจกลาง + เลนส์แฟลร์ */
+.sun{position:absolute;left:50%;bottom:0;width:192px;height:192px;
+  transform:translateX(-50%) translateY(92px) scale(.58);
+  display:flex;align-items:center;justify-content:center;
+  filter:drop-shadow(0 0 55px rgba(255,165,75,.6)) drop-shadow(0 0 130px rgba(255,100,50,.32))}
+.sun-core{position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 50% 45%,
+    #ffffff 0%, #fff8da 10%, #ffe88f 25%, #ffc258 44%, #ff9238 66%, #ff6b22 86%, rgba(255,92,28,0) 100%)}
+.sun-tex{position:absolute;inset:0;border-radius:50%;overflow:hidden;mix-blend-mode:overlay;opacity:.42;
+  background-size:cover;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' seed='7'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)'/%3E%3C/svg%3E")}
+.rays{position:absolute;inset:-62%;border-radius:50%;opacity:0;transition:opacity .25s;
+  background:repeating-conic-gradient(from 0deg,rgba(255,214,140,0) 0deg 6.4deg,rgba(255,206,128,.15) 6.4deg 8.6deg);
+  -webkit-mask:radial-gradient(circle,#000 12%,rgba(0,0,0,0) 64%);
+  mask:radial-gradient(circle,#000 12%,rgba(0,0,0,0) 64%);
+  filter:blur(3px);animation:spin 90s linear infinite}
+.rays.show{opacity:.5}
+@keyframes spin{to{transform:rotate(360deg)}}
+.flare{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;
+  mix-blend-mode:screen;opacity:.6}
+.flare.fh{width:min(94vw,500px);height:2px;filter:blur(.7px);
+  background:linear-gradient(90deg,transparent,rgba(255,244,212,0) 18%,rgba(255,247,222,.8) 50%,rgba(255,244,212,0) 82%,transparent)}
+.pulltrack{position:relative;width:min(82vw,330px);height:4px;margin:28px auto 0;
+  border-radius:4px;background:rgba(143,208,255,.22)}
+.pullfill{height:100%;width:0;border-radius:4px;
+  background:linear-gradient(90deg,var(--ice),var(--gold),var(--amber));transition:width .05s}
+.pullknob{position:absolute;top:50%;left:0;transform:translate(-50%,-50%);width:20px;height:20px;
+  border-radius:50%;background:radial-gradient(circle at 36% 32%,#fff6d6,#ff9a3d);
+  box-shadow:0 0 20px rgba(255,160,70,.9);transition:left .05s;pointer-events:none}
+.pulllabel{font-family:'Kanit';font-weight:300;margin-top:18px;font-size:15px;line-height:1.6;
+  color:var(--dim);max-width:23em}
+
+.goose{display:block}
+
+/* ---------- เค้ก (เข้ม เท่) ---------- */
+.cake{position:relative;width:246px;height:196px;margin:12px auto 2px}
+.plate{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:234px;height:13px;
+  border-radius:50%;background:linear-gradient(180deg,rgba(255,193,77,.55),rgba(255,193,77,.12));
+  box-shadow:0 12px 36px rgba(0,0,0,.55)}
+.tier{position:absolute;left:50%;transform:translateX(-50%);
+  box-shadow:inset 0 -10px 20px rgba(0,0,0,.3), inset 0 2px 0 rgba(255,255,255,.08)}
+.tier.b{bottom:13px;width:196px;height:76px;border-radius:14px;
+  background:linear-gradient(180deg,#242a48,#161a30)}
+.tier.t{bottom:82px;width:140px;height:56px;border-radius:12px;
+  background:linear-gradient(180deg,#2e2550,#1f1a3a)}
+.band{position:absolute;left:50%;transform:translateX(-50%);height:3px;border-radius:3px;
+  background:linear-gradient(90deg,var(--amber),var(--gold),var(--amber));box-shadow:0 0 12px rgba(255,170,70,.5)}
+.band.b{bottom:44px;width:196px}.band.t{bottom:106px;width:140px}
+.icing{position:absolute;left:50%;transform:translateX(-50%);
+  background:linear-gradient(180deg,#ffd36b,#ff9a3d)}
+.icing.b{bottom:80px;width:186px;height:13px;border-radius:9px}
+.icing.t{bottom:130px;width:132px;height:12px;border-radius:9px}
+.icing::before,.icing::after{content:"";position:absolute;bottom:-7px;width:14px;height:16px;
+  background:#ff9a3d;border-radius:0 0 50% 50%}
+.icing.b::before{left:22%}.icing.b::after{right:22%}
+.icing.t::before{left:26%}.icing.t::after{right:26%}
+.candle{position:absolute;bottom:136px;width:5px;height:32px;border-radius:3px;z-index:2;
+  background:linear-gradient(180deg,#ffe9b8,#d8a24a)}
+.flame{position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:11px;height:18px;
+  border-radius:50% 50% 50% 50%/62% 62% 42% 42%;
+  background:radial-gradient(circle at 50% 72%,#fff4cf,#ffb13b 52%,#ff6a1f);
+  box-shadow:0 0 18px rgba(255,150,60,.95);transform-origin:bottom center;
+  animation:flick .9s ease-in-out infinite alternate}
+@keyframes flick{from{transform:translateX(-50%) scaleY(.94)}to{transform:translateX(-50%) scaleY(1.07)}}
 .candle.out .flame{display:none}
-.candle.out::after{content:"";position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:4px;height:4px;
-  border-radius:50%;background:rgba(200,200,200,.6)}
-.mic-state{font-family:'Itim',cursive;font-size:14px;opacity:.9;margin-top:6px;min-height:20px}
+.candle.out::after{content:"";position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  width:3px;height:3px;border-radius:50%;background:rgba(200,200,220,.5)}
+.mic-state{font-family:'Kanit';font-weight:300;font-size:14px;color:var(--dim);
+  margin-top:12px;min-height:20px;line-height:1.6}
 
-/* ---------- กล่องของขวัญ ---------- */
-.gift{font-size:92px;cursor:pointer;animation:floaty 3.4s ease-in-out infinite;filter:drop-shadow(0 8px 16px rgba(0,0,0,.3))}
-.gift:active{transform:scale(.92)}
+/* ---------- ของขวัญ ---------- */
+.gift{font-size:92px;cursor:pointer;filter:drop-shadow(0 14px 26px rgba(0,0,0,.6))
+  drop-shadow(0 0 34px rgba(255,170,70,.35))}
+.gift:active{transform:scale(.94)}
 
-/* การ์ดข้อความ */
-.card{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(8px);
-  border-radius:24px;padding:24px 22px;max-width:440px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
-.card .msg{font-family:'Itim',cursive;font-size:clamp(16px,4.4vw,19px);line-height:2;white-space:pre-line}
-.sign{font-family:'Mali',cursive;font-weight:600;margin-top:14px;color:#fff}
+/* ---------- การ์ด ---------- */
+.card{position:relative;background:rgba(255,255,255,.04);backdrop-filter:blur(18px);
+  border:1px solid rgba(255,193,77,.3);border-radius:16px;padding:30px 26px;max-width:430px;
+  box-shadow:0 34px 70px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.1)}
+.card::before{content:"";position:absolute;top:0;left:24px;right:24px;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.card .msg{font-family:'Kanit';font-weight:300;font-size:clamp(15px,4vw,17px);line-height:1.95;
+  white-space:pre-line;color:var(--text)}
+.sign{font-family:'Kanit';font-weight:600;margin-top:16px;color:var(--gold);font-size:16px}
 
-/* ปุ่ม */
-.btn{font-family:'Mali',sans-serif;font-weight:600;font-size:16px;color:#7a3b12;cursor:pointer;border:none;
-  border-radius:100px;padding:13px 30px;margin-top:20px;
-  background:linear-gradient(135deg,#fff0bd,#ffd36b);box-shadow:0 10px 26px rgba(255,170,70,.5);
-  transition:transform .25s}
-.btn:hover{transform:translateY(-2px)}.btn:active{transform:scale(.97)}
-.btn.ghost{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.5);box-shadow:none}
-.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+/* ---------- ปุ่ม ---------- */
+.btn{font-family:'Kanit';font-weight:600;font-size:15px;letter-spacing:.3px;color:#0a0c1c;cursor:pointer;
+  border:none;border-radius:12px;padding:14px 30px;margin-top:22px;
+  background:linear-gradient(135deg,#ffd877,#ff9a3d);
+  box-shadow:0 8px 30px rgba(255,150,60,.35);transition:transform .2s, box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(255,150,60,.5)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn.ghost{background:transparent;color:var(--gold);border:1.5px solid rgba(255,193,77,.5);box-shadow:none}
+.btn.ghost:hover{background:rgba(255,193,77,.08)}
+.row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 
-/* ปุ่มมุม */
-.corner{position:fixed;z-index:12;top:14px;width:42px;height:42px;border-radius:50%;cursor:pointer;
-  background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);backdrop-filter:blur(6px);
-  display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff}
-#muteBtn{right:14px}#replayBtn{right:64px}
+/* ---------- ปุ่มมุม ---------- */
+.corner{position:fixed;z-index:14;top:16px;width:42px;height:42px;border-radius:11px;cursor:pointer;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,193,77,.32);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--gold);
+  transition:background .2s}
+.corner:hover{background:rgba(255,193,77,.12)}
+#muteBtn{right:16px}#replayBtn{right:66px}
 
-/* เป็ดน้อยเดินล่าง */
-.duckwalk{position:fixed;bottom:12px;left:-60px;z-index:11;font-size:34px;pointer-events:none;
-  animation:walk 11s linear infinite}
-@keyframes walk{0%{left:-60px;transform:translateY(0)}50%{transform:translateY(-8px)}100%{left:105%;transform:translateY(0)}}
+/* ---------- เหตุผล ---------- */
+.reason{font-family:'Kanit';font-weight:400;font-size:clamp(19px,5vw,24px);min-height:66px;
+  max-width:19em;line-height:1.55;color:var(--text);text-shadow:0 2px 26px rgba(0,0,0,.4)}
+.counter{font-family:'Kanit';font-weight:500;letter-spacing:1px;font-size:13px;
+  color:var(--gold);opacity:.85;margin-top:2px}
 
-/* เหตุผลที่รัก */
-.reason{font-family:'Itim',cursive;font-size:clamp(17px,4.6vw,20px);min-height:56px;max-width:22em;
-  color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.25);line-height:1.7}
-.counter{font-family:'Mali';font-weight:600;font-size:14px;opacity:.85;margin-top:4px}
+/* ---------- หัวใจ ---------- */
+.heart{font-size:78px;cursor:pointer;transition:transform .1s;
+  filter:drop-shadow(0 8px 22px rgba(255,100,70,.5)) drop-shadow(0 0 30px rgba(255,170,70,.25))}
+.lovex{font-family:'Chakra Petch';font-weight:700;font-size:clamp(30px,10vw,52px);
+  color:var(--gold);text-shadow:0 0 30px rgba(255,170,60,.55)}
+.lovebar{width:min(74vw,300px);height:4px;border-radius:4px;margin:12px 0 2px;
+  background:rgba(143,208,255,.18);overflow:hidden}
+.lovebar i{display:block;height:100%;width:6%;border-radius:4px;
+  background:linear-gradient(90deg,var(--gold),var(--ember));transition:width .2s}
 
-/* หัวใจบีบ */
-.heart{font-size:70px;cursor:pointer;transition:transform .08s;filter:drop-shadow(0 6px 14px rgba(255,80,110,.5))}
-.lovex{font-family:'Mali';font-weight:700;font-size:clamp(22px,7vw,34px);color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.25)}
+/* ---------- ฉากจบ ---------- */
+.frame{position:relative;padding:24px 26px 28px;border-radius:16px;max-width:360px;
+  background:rgba(255,255,255,.04);backdrop-filter:blur(18px);
+  border:1px solid rgba(255,193,77,.34);box-shadow:0 34px 70px rgba(0,0,0,.6)}
+.frame .duo{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:4px}
+.frame .duo .lbl{font-family:'Kanit';font-weight:500;letter-spacing:.5px;font-size:12px;color:var(--gold)}
+.frame .cap{font-family:'Kanit';font-weight:300;color:var(--text);font-size:16px;line-height:1.7;margin-top:14px}
+.frame .cap b{font-family:'Chakra Petch';font-weight:700;color:var(--gold);font-size:1.1em}
+.subnote{color:var(--dim);font-size:13.5px}
 
-.float-emoji{position:fixed;z-index:9;pointer-events:none;font-size:26px;animation:floatUp 2.6s ease-out forwards}
-@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6)}15%{opacity:1}100%{opacity:0;transform:translateY(-220px) scale(1.1) rotate(20deg)}}
-.pop-emoji{position:fixed;z-index:14;pointer-events:none;font-size:30px;animation:popOut .9s ease-out forwards}
-@keyframes popOut{0%{opacity:1;transform:translate(-50%,-50%) scale(.4)}100%{opacity:0;transform:translate(-50%,-150%) scale(1.3)}}
+/* ---------- เกมจับคู่ภาพ ---------- */
+.match-info{font-family:'Chakra Petch';font-weight:700;font-size:20px;color:var(--gold);
+  text-shadow:0 0 20px rgba(255,170,60,.45);margin:2px 0 6px}
+.match-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:min(90vw,340px);margin:6px auto}
+.mcard{position:relative;aspect-ratio:3/4;cursor:pointer;transform-style:preserve-3d;
+  transition:transform .38s cubic-bezier(.3,.9,.3,1.2)}
+.mcard.flip{transform:rotateY(180deg)}
+.mcard.done{opacity:.5;transition:opacity .4s, transform .38s}
+.mface{position:absolute;inset:0;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.mback{font-size:20px;color:var(--gold);
+  background:linear-gradient(150deg,#241a44,#15102e);border:1px solid rgba(255,193,77,.3);
+  box-shadow:inset 0 0 18px rgba(0,0,0,.4)}
+.mfront{font-size:clamp(26px,8vw,34px);transform:rotateY(180deg);
+  background:linear-gradient(150deg,#322555,#1d1640);border:1px solid rgba(255,193,77,.45);
+  box-shadow:inset 0 0 18px rgba(255,170,70,.12)}
 
-@media (prefers-reduced-motion: reduce){*{animation-duration:.001s!important}}
+/* ---------- ลอย/ป๊อป ---------- */
+.float-emoji{position:fixed;z-index:9;pointer-events:none;font-size:24px;animation:floatUp 3s ease-out forwards}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6)}18%{opacity:1}100%{opacity:0;transform:translateY(-210px) scale(1) rotate(10deg)}}
+.pop-emoji{position:fixed;z-index:15;pointer-events:none;font-size:28px;animation:popOut 1s ease-out forwards}
+@keyframes popOut{0%{opacity:1;transform:translate(-50%,-50%) scale(.4)}100%{opacity:0;transform:translate(-50%,-140%) scale(1.2)}}
+
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001s!important;transition-duration:.3s!important}}
 </style>
 </head>
 <body>
 <canvas id="sky"></canvas>
+<div id="dayLayer"></div>
+<div class="grain"></div>
+<div class="vignette"></div>
 
 <button class="corner" id="replayBtn" title="เริ่มใหม่" style="display:none">↻</button>
-<button class="corner" id="muteBtn" title="เสียง">🔈</button>
+<button class="corner" id="muteBtn" title="เสียง">♪</button>
 
 <div class="stage">
-  <!-- 1) ฉากเปิด -->
+  <!-- 1) intro -->
   <section class="scene on" id="s_intro">
-    <div class="moon" id="moon"><div class="face">🌙</div></div>
-    <div class="titlebig">สุขสันต์วันเกิดนะ 🪿✨</div>
-    <div class="sub">วันนี้วันเกิดเป็ดน้อยที่น่ารักที่สุดในโลก</div>
-    <div class="tap-hint" id="introHint">แตะพระจันทร์ เพื่อปลุกพระอาทิตย์ ☀️</div>
+    <div class="moonwrap" id="moon">
+      <div class="moon-ring o2"></div>
+      <div class="moon-ring"></div>
+      <div class="moon-charge" id="moonCharge"></div>
+      <div class="moon">
+        <span class="crater c1"></span><span class="crater c2"></span>
+        <span class="crater c3"></span><span class="crater c4"></span>
+      </div>
+    </div>
+    <div class="kicker">วันพิเศษของแกงส้ม</div>
+    <div class="title">สุขสันต์วันเกิดนะ<br><span class="em">แกงส้ม</span> <span style="font-size:.72em">🪿✨</span></div>
+    <div class="divider"><span>✦</span></div>
+    <div class="sub">เบลมีเซอร์ไพรส์เล็ก ๆ รอแกงส้มอยู่นะ — แตะพระจันทร์เพื่อเริ่มกันเลย</div>
+    <div class="tap-hint">กดค้างที่พระจันทร์เพื่อเริ่ม</div>
   </section>
 
   <!-- 2) พระอาทิตย์ขึ้น -->
   <section class="scene" id="s_sun">
-    <div class="titlebig" style="font-size:clamp(22px,6vw,32px)">ปลุกพระอาทิตย์ของวันจันทร์ 🌙→☀️</div>
+    <div class="title" style="font-size:clamp(22px,6vw,34px)">ลากให้พระอาทิตย์ขึ้น</div>
     <div class="sunwrap">
-      <div class="rays" id="rays">☀️</div>
-      <div class="sun" id="sun" style="transform:translateX(-50%) translateY(70px) scale(.7)"><div class="duck">🪿</div></div>
+      <div class="sun" id="sun">
+        <div class="rays" id="rays"></div>
+        <div class="sun-core"></div>
+        <div class="sun-tex"></div>
+        <span class="flare fh"></span>
+      </div>
     </div>
-    <div class="pulltrack"><div class="pullfill" id="pullfill"></div></div>
-    <div class="pulllabel" id="pullLabel">ลากแถบ หรือกดค้าง ดันพระอาทิตย์ให้ขึ้น ✨</div>
+    <div class="pulltrack">
+      <div class="pullfill" id="pullfill"></div>
+      <div class="pullknob" id="pullknob"></div>
+    </div>
+    <div class="pulllabel" id="pullLabel">ลากเส้น หรือกดค้างตรงไหนก็ได้ ให้พระอาทิตย์ค่อย ๆ ขึ้น</div>
   </section>
 
-  <!-- 3) เค้ก เป่าเทียน -->
+  <!-- 3) เค้ก -->
   <section class="scene" id="s_cake">
-    <div class="titlebig" style="font-size:clamp(22px,6vw,30px)">เป่าเทียนด้วยกันนะ 🎂</div>
+    <div class="title" style="font-size:clamp(22px,6vw,32px)">เป่าเทียนกันเถอะ</div>
     <div class="cake" id="cake">
       <div class="plate"></div>
-      <div class="tier b"></div><div class="icing b"></div>
-      <div class="tier t"></div><div class="icing t"></div>
-      <!-- เทียนสร้างด้วย JS -->
+      <div class="tier b"></div><div class="band b"></div><div class="icing b"></div>
+      <div class="tier t"></div><div class="band t"></div><div class="icing t"></div>
     </div>
-    <div class="mic-state" id="micState">กดปุ่มแล้ว "เป่า" ที่ไมค์ หรือกดเป่าเองก็ได้ 🕯️</div>
+    <div class="mic-state" id="micState">กดปุ่มแล้ว “เป่า” ที่ไมโครโฟน หรือจะกดเป่าเองก็ได้</div>
     <div class="row">
-      <button class="btn" id="blowMicBtn">🎤 เป่าด้วยไมค์</button>
-      <button class="btn ghost" id="blowTapBtn">🫁 กดเป่าเลย</button>
+      <button class="btn" id="blowMicBtn">เป่าด้วยไมค์</button>
+      <button class="btn ghost" id="blowTapBtn">กดเป่าเลย</button>
     </div>
   </section>
 
-  <!-- 4) กล่องของขวัญ -->
+  <!-- 4) ของขวัญ -->
   <section class="scene" id="s_gift">
-    <div class="titlebig" style="font-size:clamp(22px,6vw,30px)">มีของขวัญให้ด้วยนะ 🎁</div>
+    <div class="title" style="font-size:clamp(22px,6vw,32px)">มีของขวัญให้ด้วยนะ</div>
     <div class="gift" id="gift">🎁</div>
-    <div class="sub">แตะกล่องเพื่อเปิด 🪿</div>
+    <div class="sub">แตะกล่องเพื่อเปิด</div>
   </section>
 
-  <!-- 5) การ์ดอวยพร -->
+  <!-- 5) การ์ด -->
   <section class="scene" id="s_card">
     <div class="card">
       <div class="msg" id="cardMsg"></div>
-      <div class="sign">— รักที่สุดเลย, เบลค้าบบ 🫶</div>
+      <div class="sign">— รักที่สุดเลย, เบลค้าบบ</div>
     </div>
     <div class="row">
-      <button class="btn" id="toReasons">กดดูเหตุผลที่รักเป็ด 💛</button>
+      <button class="btn" id="toReasons">เหตุผลที่รักแกงส้ม</button>
     </div>
   </section>
 
-  <!-- 6) สุ่มเหตุผลที่รัก -->
+  <!-- 6) เหตุผล -->
   <section class="scene" id="s_reason">
-    <div class="titlebig" style="font-size:clamp(20px,5.5vw,28px)">เหตุผลที่เบลรักเป็ด 🪿💛</div>
-    <div class="reason" id="reasonText">กดปุ่มด้านล่างสิ ✨</div>
+    <div class="kicker">เหตุผลที่รักแกงส้ม</div>
+    <div class="reason" id="reasonText">แตะปุ่มด้านล่าง</div>
     <div class="counter" id="reasonCount"></div>
     <div class="row">
-      <button class="btn" id="reasonBtn">สุ่มอีกข้อ 💛</button>
-      <button class="btn ghost" id="toHeart">ต่อเลย 💗</button>
+      <button class="btn" id="reasonBtn">สุ่มอีกข้อ</button>
+      <button class="btn ghost" id="toHeart">ต่อเลย</button>
     </div>
   </section>
 
-  <!-- 7) บีบหัวใจ ทายรักกี่เท่า -->
-  <section class="scene" id="s_heart">
-    <div class="titlebig" style="font-size:clamp(20px,5.5vw,28px)">ทายสิ เบลรักเป็ดกี่เท่า? 💗</div>
-    <div class="lovex" id="loveX">×1</div>
-    <div class="heart" id="heart">💗</div>
-    <div class="sub" id="heartHint">แตะหัวใจรัว ๆ เลย!</div>
-    <div class="row">
-      <button class="btn" id="toFinal" style="display:none">สรุปแล้วรักเท่าไหร่ 🥺</button>
-    </div>
+  <!-- 7) เกมจับคู่ภาพ -->
+  <section class="scene" id="s_match">
+    <div class="title" style="font-size:clamp(21px,5.6vw,30px)">จับคู่รูปให้ครบนะ</div>
+    <div class="match-info" id="matchInfo">จับคู่ได้ 0 / 4</div>
+    <div class="match-grid" id="matchGrid"></div>
+    <div class="sub">แตะเปิดการ์ดทีละ 2 ใบ หาคู่ที่เหมือนกันให้ครบ</div>
   </section>
 
   <!-- 8) ปิดท้าย -->
   <section class="scene" id="s_final">
-    <div class="titlebig">สุขสันต์วันเกิดนะ เป็ดของเบลค้าบบ 🪿💗</div>
-    <div class="sub" id="finalMsg"></div>
-    <button class="btn" id="finalReplay">เล่นอีกรอบ ↻</button>
+    <div class="frame">
+      <div class="duo">
+        <span style="font-size:26px">🌙</span>
+        <span class="lbl">พระจันทร์ × พระอาทิตย์</span>
+        <span style="font-size:26px">☀️</span>
+      </div>
+      <div id="finalGoose"></div>
+      <div class="cap" id="finalMsg"></div>
+    </div>
+    <button class="btn" id="finalReplay" style="margin-top:24px">เล่นอีกรอบ</button>
   </section>
 </div>
 
@@ -221,200 +361,271 @@ canvas#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0}
    แก้ข้อความได้ตรงนี้
    ============================================================ */
 const CFG = {
-  bday: "1988-11-27",   // วันเกิดแกงส้ม (ค.ศ.)
+  bday: "1988-11-27",
   cardMsg:
-`สุขสันต์วันเกิดนะ แกงส้มของเบลค้าบบ 🎂
-วันอาทิตย์ที่สว่างที่สุดในปฏิทินของเบลเลย ✨
+`สุขสันต์วันเกิดนะ แกงส้มของเบลค้าบบ
 
-เบลเกิดวันจันทร์ เธอเกิดวันอาทิตย์ —
-เหมือนพระจันทร์กับพระอาทิตย์ ที่สุดท้ายก็โคจรมาเจอกัน 🌙☀️
+ขอบคุณนะ ที่เข้ามาทำให้วันธรรมดา ๆ ของเบล
+กลายเป็นวันที่เบลตั้งตารอในทุก ๆ วัน
 
-ขอให้ปีนี้ของเป็ดปังทุกเรื่อง เฮง ๆ รวย ๆ สุขภาพดี
-ยิ้มได้ทุกวัน เหมือนวันที่เบลได้เจอเธอครั้งแรก 😚
+เบลอาจจะไม่เก่งเรื่องคำหวาน ๆ เท่าไหร่
+แต่สิ่งที่รู้แน่ ๆ คือเบลอยากเห็นแกงส้มยิ้ม
+เหมือนที่แกงส้มทำให้เบลยิ้มมาตลอดเลย
 
-แล้วก็... ขอแอบสั่งอีกข้อ (ห้ามต่อรองเหมือนเดิม):
-ให้เบลรักเธอมากขึ้นทุกวัน และให้เธอมีความสุขที่สุด 💗`,
-  giftReveal:"ของขวัญชิ้นนี้ให้คนพิเศษ… ส่วนหัวใจเบลไม่ต้องแกะ เพราะเป็นของเธออยู่แล้ว 🫶",
+ขอให้ปีนี้มีแต่เรื่องดี ๆ สุขภาพแข็งแรง
+เจอเรื่องหนักแค่ไหน ก็ขอให้มีเบลอยู่ข้าง ๆ เสมอนะ`,
+  giftReveal:"ของขวัญชิ้นนี้ให้คนพิเศษ… ส่วนหัวใจเบลไม่ต้องแกะ เพราะเป็นของเธออยู่แล้ว",
   reasons:[
-    "รักที่เป็ดยิ้มแล้วโลกทั้งใบของเบลสว่างเลย ☀️",
-    "รักเสียงหัวเราะของเป็ด ฟังกี่ทีก็ไม่เบื่อ 🪿",
-    "รักที่เป็ดเป็นเป็ดตัวนี้… เป็ดของเบลคนเดียวเลย 💛",
-    "รักที่ได้คิดถึงเป็ดทุกวัน แม้แต่ตอนยุ่ง ๆ 🥺",
-    "รักที่เป็ดทำให้วันธรรมดา ๆ กลายเป็นวันพิเศษ ✨",
-    "รักความน่ารักของเป็ด ที่ไม่ต้องพยายามก็น่ารักอยู่แล้ว 😚",
-    "รักที่เป็ดอยู่ข้าง ๆ แล้วเบลรู้สึกเป็นตัวเองที่สุด 🫶",
-    "รักที่พระอาทิตย์ (เป็ด) มาเจอพระจันทร์ (เบล) พอดี 🌙☀️",
-    "รักที่อยากดูแลเป็ดไปนาน ๆ จนแก่เลย 👵👴",
-    "รักเป็ดเพราะ… ก็เป็ดอ่ะ ต้องมีเหตุผลด้วยเหรอ 💗"
+    "รักที่แกงส้มยิ้มแล้วโลกทั้งใบของเบลสว่างขึ้นมาเลย",
+    "รักเสียงหัวเราะของแกงส้ม ที่ฟังกี่ครั้งก็ไม่เคยเบื่อ",
+    "รักที่แกงส้มเป็นแกงส้มแบบนี้แหละ ไม่ต้องเปลี่ยนเป็นใครเลย",
+    "รักที่ได้คิดถึงแกงส้มในทุก ๆ วัน แม้แต่ตอนที่ยุ่งที่สุด",
+    "รักที่แกงส้มทำให้วันธรรมดา ๆ กลายเป็นวันที่พิเศษขึ้นมา",
+    "รักความน่ารักของแกงส้ม ที่ไม่ต้องพยายามก็น่ารักอยู่แล้ว",
+    "รักที่ได้อยู่ข้าง ๆ แกงส้ม แล้วเบลรู้สึกเป็นตัวเองที่สุด",
+    "รักที่ได้เจอแกงส้ม เหมือนเป็นโชคดีที่สุดของเบลเลย",
+    "รักที่แค่ได้อยู่ใกล้ ๆ แกงส้ม ก็ยิ้มได้ทั้งวันแล้ว",
+    "รักแกงส้ม… เพราะเป็นแกงส้ม ไม่ต้องมีเหตุผลก็ได้"
   ],
-  finalMsgTpl:"วันนี้เป็ดอายุ {age} ปีแล้วนะ 🎉 แต่ในสายตาเบล ยังน่ารักเหมือนเดิมทุกวันเลย 🥺🪿"
+  finalMsgTpl:"ไม่ว่าจะผ่านไปอีกกี่ปี ในสายตาเบล แกงส้มก็ยังน่ารักเหมือนเดิมในทุก ๆ วันเลย"
 };
+
+/* ---------- หงส์/เป็ดทองมินิมอล ---------- */
+let gooseN=0;
+function gooseSVG(size){const id='gg'+(++gooseN);return `
+<svg class="goose" width="${size}" height="${Math.round(size*0.8)}" viewBox="0 0 130 104" aria-hidden="true">
+  <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#ffe6a6"/><stop offset="1" stop-color="#e2962f"/></linearGradient></defs>
+  <ellipse cx="56" cy="68" rx="38" ry="25" fill="url(#${id})"/>
+  <path d="M20 64 q-14 -3 -18 7 q12 3 20 -2 Z" fill="url(#${id})"/>
+  <path d="M84 62 Q97 57 96 36 Q95 23 106 20" fill="none" stroke="url(#${id})" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="108" cy="21" r="9.5" fill="url(#${id})"/>
+  <path d="M116 18 l13 3.5 l-13 4 Z" fill="#ff7a2e"/>
+  <circle cx="111" cy="19" r="1.6" fill="#241a22"/>
+  <ellipse cx="52" cy="70" rx="22" ry="12" fill="rgba(255,255,255,.14)"/>
+</svg>`;}
 
 /* ---------- อายุ ---------- */
 function ageNow(){const b=new Date(CFG.bday+"T00:00:00"),n=new Date();
   let a=n.getFullYear()-b.getFullYear();
   const m=n.getMonth()-b.getMonth();if(m<0||(m===0&&n.getDate()<b.getDate()))a--;return a;}
 const AGE=ageNow();
+document.getElementById('finalGoose').innerHTML=gooseSVG(104);
 
-/* ---------- ท้องฟ้า canvas (ดาวกลางคืน + ลูกโป่ง/คอนเฟตติ) ---------- */
+/* ---------- ท้องฟ้า canvas ---------- */
 const cv=document.getElementById('sky'),ctx=cv.getContext('2d');
-let W,H,DPR,stars=[],conf=[],balloons=[],t=0,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-function resize(){DPR=Math.min(devicePixelRatio||1,2);W=cv.width=innerWidth*DPR;H=cv.height=innerHeight*DPR;
+let W,H,DPR,stars=[],dust=[],bokeh=[],conf=[],balloons=[],shoot=null,shootTimer=0,
+    t=0,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function resize(){DPR=Math.min(devicePixelRatio||1,1.5);W=cv.width=innerWidth*DPR;H=cv.height=innerHeight*DPR;
   cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px';
-  stars=[];const n=Math.round(innerWidth*innerHeight/4000);
-  for(let i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H*.8,r:(Math.random()*1.1+.3)*DPR,
-    tw:Math.random()*6.28,sp:Math.random()*.02+.005});}
+  stars=[];const n=Math.min(Math.round(innerWidth*innerHeight/8000),170);
+  for(let i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:(Math.random()*1.1+.3)*DPR,
+    tw:Math.random()*6.28,sp:Math.random()*.0025+.0008,c:Math.random()<.3});
+  dust=[];const dn=Math.min(Math.round(innerWidth*innerHeight/15000),80);
+  for(let i=0;i<dn;i++)dust.push({x:Math.random()*W,y:Math.random()*H,r:(Math.random()*1.3+.5)*DPR,
+    vx:(Math.random()-.5)*.12*DPR,vy:-(Math.random()*.1+.02)*DPR,a:Math.random()*.45+.18,
+    c:Math.random()<.5});
+  bokeh=[];for(let i=0;i<5;i++)bokeh.push({x:Math.random()*W,y:Math.random()*H,
+    r:(Math.random()*44+30)*DPR,vx:(Math.random()-.5)*.07*DPR,vy:-(Math.random()*.04+.02)*DPR,
+    a:Math.random()*.05+.03,c:Math.random()<.5});}
 addEventListener('resize',resize);resize();
-const CC=['#ffd54a','#ff9f43','#ff5b6e','#ff9fb2','#fff7ec','#ffe29a'];
+const CC=['#ffc14d','#ff8a3d','#ff5e3a','#8fd0ff','#ffe29a'];
 function burstConfetti(n){for(let i=0;i<n;i++)conf.push({x:Math.random()*W,y:-20,
-  vx:(Math.random()-.5)*4*DPR,vy:(Math.random()*3+2)*DPR,g:.08*DPR,
-  s:(Math.random()*6+4)*DPR,rot:Math.random()*6.28,vr:(Math.random()-.5)*.3,
-  c:CC[Math.floor(Math.random()*CC.length)],life:120+Math.random()*60});}
-function releaseBalloons(n){const E=['🎈','🪿','💛','🎈','🧡','🪿'];
+  vx:(Math.random()-.5)*4*DPR,vy:(Math.random()*3+2)*DPR,g:.07*DPR,
+  s:(Math.random()*5+3)*DPR,rot:Math.random()*6.28,vr:(Math.random()-.5)*.25,
+  c:CC[Math.floor(Math.random()*CC.length)],life:140+Math.random()*60});}
+function releaseBalloons(n){const E=['✨','🤍','⭐','✨','💫','🪿'];
   for(let i=0;i<n;i++)balloons.push({x:Math.random()*innerWidth,y:innerHeight+40+Math.random()*120,
-    vy:-(Math.random()*1.0+1.1),sway:Math.random()*6.28,e:E[Math.floor(Math.random()*E.length)],
-    size:28+Math.random()*16});}
-let dayMode=false;
+    vy:-(Math.random()*.9+.9),sway:Math.random()*6.28,e:E[Math.floor(Math.random()*E.length)],
+    size:24+Math.random()*14});}
+let dayMode=false,dayAmt=0;
+function ccol(c,a){return c?"rgba(255,193,77,"+a+")":"rgba(230,240,255,"+a+")";}
 (function loop(){t+=reduce?0:1;ctx.clearRect(0,0,W,H);
-  if(!dayMode){for(const s of stars){const tw=Math.sin(t*s.sp+s.tw)*.4+.6;
-    ctx.fillStyle="rgba(255,255,255,"+tw+")";ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,7);ctx.fill();}}
-  // confetti
+  const nightK=1-dayAmt; // 1 = กลางคืนเต็ม, 0 = กลางวันเต็ม
+  for(const b of bokeh){b.x+=b.vx;b.y+=b.vy;if(b.y+b.r<0)b.y=H+b.r;if(b.x<-b.r)b.x=W+b.r;if(b.x>W+b.r)b.x=-b.r;
+    const gr=ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r);
+    gr.addColorStop(0,ccol(b.c,b.a*(.35+nightK*.65)));gr.addColorStop(1,ccol(b.c,0));
+    ctx.fillStyle=gr;ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,7);ctx.fill();}
+  if(nightK>.02){
+    for(const s of stars){const tw=Math.sin(t*s.sp+s.tw)*.14+.8;
+      ctx.fillStyle=ccol(s.c,tw*(s.c?.9:1)*nightK);ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,7);ctx.fill();}
+    for(const d of dust){d.x+=d.vx;d.y+=d.vy;if(d.y<-4)d.y=H+4;if(d.x<-4)d.x=W+4;if(d.x>W+4)d.x=-4;
+      ctx.fillStyle=ccol(d.c,d.a*nightK);ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,7);ctx.fill();}
+    if(!reduce&&dayAmt<.35){if(shoot){shoot.x+=shoot.vx;shoot.y+=shoot.vy;shoot.life--;
+      ctx.save();ctx.strokeStyle='rgba(230,240,255,'+(shoot.life/shoot.max*.8*nightK)+')';ctx.lineWidth=1.5*DPR;
+      ctx.beginPath();ctx.moveTo(shoot.x,shoot.y);ctx.lineTo(shoot.x-shoot.vx*10,shoot.y-shoot.vy*10);ctx.stroke();ctx.restore();
+      if(shoot.life<=0)shoot=null;}
+    else if(++shootTimer>500){shootTimer=0;if(Math.random()<.5){const sx=Math.random()*W*.7;
+      shoot={x:sx,y:Math.random()*H*.3,vx:(2.4+Math.random()*1.6)*DPR,vy:(1.1+Math.random())*DPR,life:70,max:70};}}}
+  }
   conf.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.life--;
     ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.fillStyle=p.c;
     ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);ctx.restore();});
   conf=conf.filter(p=>p.life>0&&p.y<H+40);
-  // balloons (วาดด้วย emoji บน canvas)
-  balloons.forEach(b=>{b.y+=b.vy;b.sway+=.03;const x=b.x+Math.sin(b.sway)*14;
+  balloons.forEach(b=>{b.y+=b.vy;b.sway+=.025;const x=b.x+Math.sin(b.sway)*12;
     ctx.font=(b.size*DPR)+'px serif';ctx.textAlign='center';ctx.fillText(b.e,x*DPR,b.y*DPR);});
   balloons=balloons.filter(b=>b.y>-60);
   requestAnimationFrame(loop);})();
 
-/* ---------- เสียง (สังเคราะห์เอง: เพลงวันเกิด + เอฟเฟกต์) ---------- */
-let actx,master,muted=false,musicTimer=null;
+/* ---------- เสียง ---------- */
+let actx,master,muted=false;
 function initAudio(){if(actx)return;try{actx=new (window.AudioContext||window.webkitAudioContext)();
   master=actx.createGain();master.gain.value=.5;master.connect(actx.destination);}catch(e){}}
 function tone(freq,dur,type,vol,when){if(!actx||muted)return;const o=actx.createOscillator(),g=actx.createGain();
   o.type=type||'sine';o.frequency.value=freq;o.connect(g);g.connect(master);
   const s=(when||actx.currentTime);g.gain.setValueAtTime(0,s);
-  g.gain.linearRampToValueAtTime(vol||.3,s+.02);g.gain.exponentialRampToValueAtTime(.0001,s+dur);
+  g.gain.linearRampToValueAtTime(vol||.3,s+.03);g.gain.exponentialRampToValueAtTime(.0001,s+dur);
   o.start(s);o.stop(s+dur+.02);}
-// ทำนองวันเกิด (โน้ตเอง ไม่ใช่เนื้อร้อง) — Happy Birthday melody
 const HBD=[ [392,.5],[392,.5],[440,1],[392,1],[523,1],[494,2],
   [392,.5],[392,.5],[440,1],[392,1],[587,1],[523,2],
   [392,.5],[392,.5],[784,1],[659,1],[523,1],[494,1],[440,2],
   [698,.5],[698,.5],[659,1],[523,1],[587,1],[523,2] ];
-function playHBD(){if(!actx)return;let when=actx.currentTime+.1;const bpm=.42;
-  HBD.forEach(([f,d])=>{tone(f,d*bpm*1.6,'triangle',.26,when);when+=d*bpm;});}
-function chime(){tone(880,.5,'sine',.3);tone(1320,.6,'sine',.2,actx&&actx.currentTime+.08);}
-function quack(){if(!actx||muted)return;const o=actx.createOscillator(),g=actx.createGain();
-  o.type='sawtooth';o.connect(g);g.connect(master);const s=actx.currentTime;
-  o.frequency.setValueAtTime(420,s);o.frequency.linearRampToValueAtTime(250,s+.16);
-  g.gain.setValueAtTime(.0001,s);g.gain.linearRampToValueAtTime(.25,s+.03);
-  g.gain.exponentialRampToValueAtTime(.0001,s+.2);o.start(s);o.stop(s+.22);}
+function playHBD(){if(!actx)return;let when=actx.currentTime+.1;const bpm=.44;
+  HBD.forEach(([f,d])=>{tone(f,d*bpm*1.6,'triangle',.24,when);when+=d*bpm;});}
+function chime(){tone(880,.6,'sine',.28);tone(1320,.7,'sine',.16,actx&&actx.currentTime+.09);}
+function sparkleSound(){tone(1046,.4,'sine',.18);tone(1568,.5,'sine',.12,actx&&actx.currentTime+.06);}
+let bgOn=false,bgTimer=null;
+const LULLABY=[ [523,1.5],[659,1.5],[784,2],[659,1.5],[587,1.5],[523,3],
+  [587,1.5],[659,1.5],[523,2],[440,1.5],[392,1.5],[523,3] ];
+function bgLoop(){if(!actx||muted)return;let when=actx.currentTime+.06;const beat=.5;
+  LULLABY.forEach(([f,d])=>{tone(f,d*beat*1.6,'sine',.07,when);tone(f/2,d*beat*1.6,'triangle',.04,when);when+=d*beat;});}
+function startBg(){if(bgOn||!actx)return;bgOn=true;bgLoop();
+  const total=LULLABY.reduce((a,x)=>a+x[1],0)*.5*1000;bgTimer=setInterval(bgLoop,total+300);}
 document.getElementById('muteBtn').onclick=function(){muted=!muted;if(master)master.gain.value=muted?0:.5;
-  this.textContent=muted?'🔇':'🔈';};
+  this.textContent=muted?'🔇':'♪';};
 
 /* ---------- ตัวจัดการฉาก ---------- */
-const scenes=['s_intro','s_sun','s_cake','s_gift','s_card','s_reason','s_heart','s_final'];
+const scenes=['s_intro','s_sun','s_cake','s_gift','s_card','s_reason','s_match','s_final'];
 function show(id){scenes.forEach(s=>document.getElementById(s).classList.toggle('on',s===id));
-  document.getElementById('replayBtn').style.display = id==='s_intro'?'none':'flex';}
+  document.getElementById('replayBtn').style.display = id==='s_intro'?'none':'flex';
+  document.querySelector('.stage').scrollTop=0;}
 document.getElementById('replayBtn').onclick=()=>location.reload();
 document.getElementById('finalReplay').onclick=()=>location.reload();
 
-/* ---------- 1) intro → แตะพระจันทร์ ---------- */
-document.getElementById('moon').onclick=function(){initAudio();if(actx&&actx.state==='suspended')actx.resume();
-  quack();show('s_sun');};
+/* 1) intro — กดค้างที่พระจันทร์ให้วงแหวนเต็ม */
+const moonWrap=document.getElementById('moon'),moonCharge=document.getElementById('moonCharge'),
+      moonInner=document.querySelector('#moon .moon');
+let charging=false,chargeP=0,moonDone=false;
+function setChargeUI(){moonCharge.style.setProperty('--p',(chargeP*100).toFixed(1)+'%');
+  if(moonInner)moonInner.style.transform='scale('+(1+chargeP*0.07)+')';
+  moonInner&&(moonInner.style.filter='brightness('+(1+chargeP*0.35)+')');}
+function chargeTick(){if(!charging)return;
+  chargeP=Math.min(1,chargeP+0.02); setChargeUI();
+  if(chargeP>=1&&!moonDone){moonDone=true;charging=false;moonWrap.classList.remove('charging');
+    chime();startBg();setTimeout(()=>show('s_sun'),260);return;}
+  requestAnimationFrame(chargeTick);}
+function chargeBack(){if(moonDone||charging)return;
+  chargeP=Math.max(0,chargeP-0.05);setChargeUI();if(chargeP>0)requestAnimationFrame(chargeBack);}
+moonWrap.addEventListener('pointerdown',e=>{if(moonDone)return;
+  try{moonWrap.setPointerCapture(e.pointerId);}catch(_){}
+  initAudio();if(actx&&actx.state==='suspended')actx.resume();sparkleSound();
+  charging=true;moonWrap.classList.add('charging');chargeTick();});
+function stopCharge(){if(moonDone||!charging)return;charging=false;moonWrap.classList.remove('charging');chargeBack();}
+moonWrap.addEventListener('pointerup',stopCharge);
+moonWrap.addEventListener('pointercancel',stopCharge);
 
-/* ---------- 2) ดันพระอาทิตย์ขึ้น ---------- */
+/* 2) ดันพระอาทิตย์ขึ้น */
 const sun=document.getElementById('sun'),pullfill=document.getElementById('pullfill'),
-      track=document.querySelector('.pulltrack');
+      pullknob=document.getElementById('pullknob'),track=document.querySelector('.pulltrack');
 let sunP=0,holding=false,done2=false;
 function setSun(p){sunP=Math.max(0,Math.min(1,p));pullfill.style.width=(sunP*100)+'%';
-  const y=70-sunP*70, sc=.7+sunP*.3;
+  pullknob.style.left=(sunP*100)+'%';
+  const y=90-sunP*90, sc=.6+sunP*.4;
   sun.style.transform='translateX(-50%) translateY('+y+'px) scale('+sc+')';
-  if(sunP>.55){document.body.classList.add('day');dayMode=true;document.getElementById('rays').classList.add('show');}
-  if(sunP>=1&&!done2){done2=true;document.getElementById('pullLabel').textContent='พระอาทิตย์ขึ้นแล้ว! เธอคือพระอาทิตย์ของวันจันทร์ของเบลนะ ☀️🪿';
-    chime();burstConfetti(60);
-    setTimeout(()=>show('s_cake'),1400);}}
+  // ผูกสีฟ้า/ดาว/แสงกับตำแหน่งลากแบบต่อเนื่อง (ลากไป-กลับได้)
+  dayAmt=sunP;
+  document.getElementById('dayLayer').style.opacity=sunP;
+  document.getElementById('rays').style.opacity=(sunP*0.5).toFixed(3);
+  if(sunP>=1&&!done2){done2=true;
+    document.getElementById('pullLabel').textContent='สว่างแล้ว! ขอให้ทุก ๆ วันของแกงส้มสดใสแบบนี้เลยนะ';
+    chime();burstConfetti(60);setTimeout(()=>show('s_cake'),1700);}}
 function trackSet(clientX){const r=track.getBoundingClientRect();setSun((clientX-r.left)/r.width);}
 track.addEventListener('pointerdown',e=>{trackSet(e.clientX);track.setPointerCapture(e.pointerId);holding=true;});
 track.addEventListener('pointermove',e=>{if(holding)trackSet(e.clientX);});
 addEventListener('pointerup',()=>holding=false);
-// กดค้างที่ไหนก็ได้ในฉากก็ดันขึ้น
-document.getElementById('s_sun').addEventListener('pointerdown',()=>{holdRaise=true;});
+let holdRaise=false;
+document.getElementById('s_sun').addEventListener('pointerdown',e=>{if(e.target!==track&&!track.contains(e.target))holdRaise=true;});
 addEventListener('pointerup',()=>holdRaise=false);
-let holdRaise=false;setInterval(()=>{if(holdRaise&&!done2)setSun(sunP+0.02);},40);
+setInterval(()=>{if(holdRaise&&!done2)setSun(sunP+0.016);},40);
 
-/* ---------- 3) เค้ก + เทียน ---------- */
+/* 3) เค้ก */
 const cake=document.getElementById('cake');
-const NC=Math.min(AGE,12); // เทียนไม่เกิน 12 เล่มให้สวย (อายุจริงโชว์ตอนจบ)
+const NC=Math.min(AGE,5);
 let candles=[];
-(function buildCandles(){const spread=150,left=115-spread/2;
+(function buildCandles(){const spread=80,left=118-spread/2;
   for(let i=0;i<NC;i++){const c=document.createElement('div');c.className='candle';
-    c.style.left=(left+ (NC>1? i*(spread/(NC-1)):spread/2))+'px';
+    c.style.left=(left+(NC>1? i*(spread/(NC-1)):spread/2))+'px';
     c.innerHTML='<div class="flame"></div>';cake.appendChild(c);candles.push(c);}})();
 let blown=false;
 function blowOut(){if(blown)return;blown=true;
-  candles.forEach((c,i)=>setTimeout(()=>c.classList.add('out'),i*90));
-  document.getElementById('micState').textContent='เป่าติดแล้ว! 🎉 สุขสันต์วันเกิดน้าา';
+  candles.forEach((c,i)=>setTimeout(()=>c.classList.add('out'),i*110));
+  document.getElementById('micState').textContent='เป่าติดแล้ว — สุขสันต์วันเกิดนะ';
   initAudio();if(actx&&actx.state==='suspended')actx.resume();
-  setTimeout(()=>{burstConfetti(120);releaseBalloons(16);playHBD();},candles.length*90+200);
-  setTimeout(()=>show('s_gift'),2600);}
+  setTimeout(()=>{burstConfetti(110);releaseBalloons(14);playHBD();},candles.length*110+200);
+  setTimeout(()=>show('s_gift'),2800);}
 document.getElementById('blowTapBtn').onclick=blowOut;
 document.getElementById('blowMicBtn').onclick=async function(){
   const st=document.getElementById('micState');
   try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});
     initAudio();const src=actx.createMediaStreamSource(stream);
     const an=actx.createAnalyser();an.fftSize=512;src.connect(an);
-    const data=new Uint8Array(an.frequencyBinCount);st.textContent='เป่าที่ไมค์ได้เลย~ 🎤💨';
+    const data=new Uint8Array(an.frequencyBinCount);st.textContent='เป่าที่ไมโครโฟนได้เลย…';
     const chk=()=>{an.getByteFrequencyData(data);let sum=0;for(const v of data)sum+=v;
       const avg=sum/data.length;
       if(avg>42){stream.getTracks().forEach(t=>t.stop());blowOut();return;}
       if(!blown)requestAnimationFrame(chk);};chk();
-  }catch(e){st.textContent='ไมค์ใช้ไม่ได้ กดเป่าเองได้เลยน้า 🫁';}
+  }catch(e){st.textContent='ไมโครโฟนใช้ไม่ได้ กดเป่าเองได้เลยนะ';}
 };
 
-/* ---------- 4) กล่องของขวัญ ---------- */
-document.getElementById('gift').onclick=function(){quack();chime();burstConfetti(40);
+/* 4) ของขวัญ */
+document.getElementById('gift').onclick=function(){sparkleSound();chime();burstConfetti(36);
   this.textContent='🎉';
   document.getElementById('cardMsg').textContent=CFG.cardMsg+"\n\n"+CFG.giftReveal;
-  setTimeout(()=>show('s_card'),700);};
+  setTimeout(()=>show('s_card'),750);};
 
-/* ---------- 5→6) เหตุผลที่รัก ---------- */
+/* 5→6) เหตุผล */
 document.getElementById('toReasons').onclick=()=>show('s_reason');
 let rIdx=-1,rCount=0;
 document.getElementById('reasonBtn').onclick=function(){let n;do{n=Math.floor(Math.random()*CFG.reasons.length);}
   while(CFG.reasons.length>1&&n===rIdx);rIdx=n;rCount++;
   document.getElementById('reasonText').textContent=CFG.reasons[n];
-  document.getElementById('reasonCount').textContent='ข้อที่ '+rCount+' 💛';
-  spawnFloat('💛');quack();};
-document.getElementById('toHeart').onclick=()=>show('s_heart');
+  document.getElementById('reasonCount').textContent='ข้อที่ '+rCount;
+  spawnFloat('✨');sparkleSound();};
+document.getElementById('toHeart').onclick=()=>{show('s_match');startMatch();};
 
-/* ---------- 7) บีบหัวใจ ---------- */
-let love=1;const heart=document.getElementById('heart'),loveX=document.getElementById('loveX');
-heart.addEventListener('pointerdown',e=>{love++;loveX.textContent='×'+love;
-  heart.style.transform='scale('+(1+Math.min(love*0.03,.8))+')';
-  popEmoji(e.clientX,e.clientY,'💗');if(love%4===0)quack();
-  if(love===1)initAudio();
-  if(love>=15){document.getElementById('heartHint').textContent='โอ้โห รักเยอะมาก! 🥺';
-    document.getElementById('toFinal').style.display='inline-block';}});
-document.getElementById('toFinal').onclick=function(){
-  document.getElementById('finalMsg').textContent=CFG.finalMsgTpl.replace('{age}',AGE)+
-    '  (วันนี้เบลกดรักให้ ×'+love+' เลยนะ 💗)';
-  burstConfetti(120);releaseBalloons(14);playHBD();show('s_final');};
+/* 7) เกมจับคู่ภาพ (8 รูป = 4 คู่) */
+const MATCH_EMO=['🌙','☀️','🎂','🪿'];
+let mFirst=null,mLock=false,mPairs=0;
+function startMatch(){mFirst=null;mLock=false;mPairs=0;
+  document.getElementById('matchInfo').textContent='จับคู่ได้ 0 / '+MATCH_EMO.length;
+  const deck=[...MATCH_EMO,...MATCH_EMO].sort(()=>Math.random()-0.5);
+  const grid=document.getElementById('matchGrid');grid.innerHTML='';
+  deck.forEach(em=>{const c=document.createElement('div');c.className='mcard';c.dataset.em=em;
+    c.innerHTML='<div class="mface mback">✦</div><div class="mface mfront">'+em+'</div>';
+    c.addEventListener('click',()=>flipCard(c));grid.appendChild(c);});}
+function flipCard(c){if(mLock||c.classList.contains('flip')||c.classList.contains('done'))return;
+  initAudio();if(actx&&actx.state==='suspended')actx.resume();
+  c.classList.add('flip');sparkleSound();
+  if(!mFirst){mFirst=c;return;}
+  mLock=true;const a=mFirst,b=c;
+  if(a.dataset.em===b.dataset.em){
+    setTimeout(()=>{a.classList.add('done');b.classList.add('done');mPairs++;
+      document.getElementById('matchInfo').textContent='จับคู่ได้ '+mPairs+' / '+MATCH_EMO.length;
+      mFirst=null;mLock=false;if(mPairs>=MATCH_EMO.length)matchWin();},460);
+  }else{
+    setTimeout(()=>{a.classList.remove('flip');b.classList.remove('flip');mFirst=null;mLock=false;},820);}}
+function matchWin(){chime();burstConfetti(90);releaseBalloons(12);playHBD();
+  document.getElementById('matchInfo').textContent='เก่งมาก จับคู่ครบเลย 🎉';
+  document.getElementById('finalMsg').innerHTML=CFG.finalMsgTpl+
+    '<br><span class="subnote">เก่งมากเลยน้า จับคู่ครบทุกใบ 🎉 สุขสันต์วันเกิดอีกครั้งนะ 🤍</span>';
+  setTimeout(()=>show('s_final'),1400);}
 
-/* ---------- เอฟเฟกต์ลอย ---------- */
+/* เอฟเฟกต์ลอย */
 function spawnFloat(txt){const el=document.createElement('div');el.className='float-emoji';el.textContent=txt;
-  el.style.left=(innerWidth/2-14+(Math.random()*120-60))+'px';el.style.top=(innerHeight*.5)+'px';
-  document.body.appendChild(el);setTimeout(()=>el.remove(),2600);}
+  el.style.left=(innerWidth/2-12+(Math.random()*120-60))+'px';el.style.top=(innerHeight*.5)+'px';
+  document.body.appendChild(el);setTimeout(()=>el.remove(),3000);}
 function popEmoji(x,y,txt){const el=document.createElement('div');el.className='pop-emoji';el.textContent=txt;
-  el.style.left=x+'px';el.style.top=y+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),900);}
-
-/* เป็ดเดินล่างเป็นระยะ */
-function walkDuck(){const d=document.createElement('div');d.className='duckwalk';d.textContent='🪿';
-  d.style.animationDuration=(9+Math.random()*4)+'s';document.body.appendChild(d);
-  setTimeout(()=>d.remove(),13000);}
-walkDuck();setInterval(walkDuck,7000);
+  el.style.left=x+'px';el.style.top=y+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),1000);}
 </script>
 </body>
 </html>
