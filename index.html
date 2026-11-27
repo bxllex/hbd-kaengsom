@@ -217,6 +217,21 @@ canvas#sky{position:fixed;inset:0;width:100%;height:100%;z-index:1}
 .frame .cap b{font-family:'Chakra Petch';font-weight:700;color:var(--gold);font-size:1.1em}
 .subnote{color:var(--dim);font-size:13.5px}
 
+/* ---------- ขอพรดาวตก ---------- */
+.wishsky{position:relative;width:min(92vw,420px);height:200px;margin:8px auto;border-radius:18px;
+  overflow:hidden;cursor:pointer;touch-action:none;background:linear-gradient(180deg,#0a0c1c,#141833);
+  border:1px solid rgba(255,193,77,.2);box-shadow:inset 0 0 44px rgba(0,0,0,.45)}
+.shootstar{position:absolute;width:92px;height:2px;border-radius:2px;pointer-events:none;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,245,220,.95));
+  box-shadow:0 0 10px rgba(255,240,200,.8);transform:rotate(18deg);
+  animation:shootAcross 3.4s linear infinite}
+.shootstar::after{content:"";position:absolute;right:-3px;top:-2px;width:6px;height:6px;border-radius:50%;
+  background:#fff;box-shadow:0 0 12px rgba(255,240,200,1)}
+@keyframes shootAcross{0%{left:-22%;top:18%;opacity:0}12%{opacity:1}72%{opacity:1}100%{left:112%;top:62%;opacity:0}}
+.wishsky.wished{cursor:default}
+.wishmsg{font-family:'Kanit';font-weight:300;font-size:clamp(15px,4vw,18px);color:var(--text);
+  line-height:1.6;max-width:22em;margin-top:8px;min-height:48px}
+
 /* ---------- เกมจับคู่ภาพ ---------- */
 .match-info{font-family:'Chakra Petch';font-weight:700;font-size:20px;color:var(--gold);
   text-shadow:0 0 20px rgba(255,170,60,.45);margin:2px 0 6px}
@@ -318,8 +333,16 @@ canvas#sky{position:fixed;inset:0;width:100%;height:100%;z-index:1}
       <div class="sign">— รักที่สุดเลย, เบลค้าบบ</div>
     </div>
     <div class="row">
-      <button class="btn" id="toReasons">เหตุผลที่รักแกงส้ม</button>
+      <button class="btn" id="toWish">ไปขอพรกับดาวตก 🌠</button>
     </div>
+  </section>
+
+  <!-- 5.5) ขอพรดาวตก -->
+  <section class="scene" id="s_wish">
+    <div class="title" style="font-size:clamp(21px,5.6vw,30px)">ขอพรกับดาวตกสิ 🌠</div>
+    <div class="wishsky" id="wishSky"><div class="shootstar"></div></div>
+    <div class="wishmsg" id="wishMsg">หลับตา ตั้งใจอธิษฐาน แล้วแตะที่ท้องฟ้าเลยนะ</div>
+    <div class="row"><button class="btn" id="wishNext" style="display:none">ไปต่อ 💫</button></div>
   </section>
 
   <!-- 6) เหตุผล -->
@@ -439,9 +462,18 @@ function releaseBalloons(n){const E=['✨','🤍','⭐','✨','💫','🪿'];
     vy:-(Math.random()*.9+.9),sway:Math.random()*6.28,e:E[Math.floor(Math.random()*E.length)],
     size:24+Math.random()*14});}
 let dayMode=false,dayAmt=0;
+let pxT=0,pyT=0,px=0,py=0;             // parallax (เอียงมือถือ)
+let fw=[],fwActive=false,fwAcc=0;      // ดอกไม้ไฟ
 function ccol(c,a){return c?"rgba(255,193,77,"+a+")":"rgba(230,240,255,"+a+")";}
+function burstFW(x,y){const col=CC[Math.floor(Math.random()*CC.length)];const n=30+Math.floor(Math.random()*18);
+  for(let i=0;i<n;i++){const a=Math.random()*6.283,sp=(Math.random()*3+1.4)*DPR;
+    fw.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,g:.03*DPR,life:48+Math.random()*26,max:74,c:col});}}
+function startFireworks(ms){fwActive=true;fwAcc=0;clearTimeout(startFireworks._t);
+  startFireworks._t=setTimeout(()=>{fwActive=false;},ms||6500);}
 (function loop(){t+=reduce?0:1;ctx.clearRect(0,0,W,H);
-  const nightK=1-dayAmt; // 1 = กลางคืนเต็ม, 0 = กลางวันเต็ม
+  const nightK=1-dayAmt;
+  px+=(pxT-px)*0.07; py+=(pyT-py)*0.07;
+  ctx.save();ctx.translate(px*DPR,py*DPR);
   for(const b of bokeh){b.x+=b.vx;b.y+=b.vy;if(b.y+b.r<0)b.y=H+b.r;if(b.x<-b.r)b.x=W+b.r;if(b.x>W+b.r)b.x=-b.r;
     const gr=ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r);
     gr.addColorStop(0,ccol(b.c,b.a*(.35+nightK*.65)));gr.addColorStop(1,ccol(b.c,0));
@@ -458,6 +490,14 @@ function ccol(c,a){return c?"rgba(255,193,77,"+a+")":"rgba(230,240,255,"+a+")";}
     else if(++shootTimer>500){shootTimer=0;if(Math.random()<.5){const sx=Math.random()*W*.7;
       shoot={x:sx,y:Math.random()*H*.3,vx:(2.4+Math.random()*1.6)*DPR,vy:(1.1+Math.random())*DPR,life:70,max:70};}}}
   }
+  ctx.restore();
+  // ดอกไม้ไฟ
+  if(fwActive&&++fwAcc>26){fwAcc=0;burstFW(Math.random()*W,(0.14+Math.random()*0.4)*H);
+    if(!muted&&actx)tone(320+Math.random()*180,.22,'sine',.11);}
+  fw.forEach(p=>{p.vx*=0.985;p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.life--;
+    ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.c;
+    ctx.beginPath();ctx.arc(p.x,p.y,2.1*DPR,0,7);ctx.fill();});
+  ctx.globalAlpha=1;fw=fw.filter(p=>p.life>0);
   conf.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.life--;
     ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.fillStyle=p.c;
     ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);ctx.restore();});
@@ -466,6 +506,16 @@ function ccol(c,a){return c?"rgba(255,193,77,"+a+")":"rgba(230,240,255,"+a+")";}
     ctx.font=(b.size*DPR)+'px serif';ctx.textAlign='center';ctx.fillText(b.e,x*DPR,b.y*DPR);});
   balloons=balloons.filter(b=>b.y>-60);
   requestAnimationFrame(loop);})();
+// เอียงมือถือ → ดาว/จันทร์ขยับ (parallax)
+let gyroOn=false;
+function applyTilt(e){const g=e.gamma||0, be=(e.beta||0);
+  pxT=Math.max(-26,Math.min(26,g*0.9)); pyT=Math.max(-20,Math.min(20,(be-45)*0.5));
+  const mw=document.getElementById('moon');
+  if(mw&&!mw.classList.contains('charging'))mw.style.transform='translate('+(pxT*0.5).toFixed(1)+'px,'+(pyT*0.4).toFixed(1)+'px)';}
+function enableGyro(){if(gyroOn)return;gyroOn=true;
+  try{if(typeof DeviceOrientationEvent!=='undefined'&&DeviceOrientationEvent.requestPermission){
+    DeviceOrientationEvent.requestPermission().then(s=>{if(s==='granted')addEventListener('deviceorientation',applyTilt);}).catch(()=>{});
+  }else{addEventListener('deviceorientation',applyTilt);}}catch(_){}}
 
 /* ---------- เสียง ---------- */
 let actx,master,muted=false;
@@ -495,7 +545,7 @@ document.getElementById('muteBtn').onclick=function(){muted=!muted;if(master)mas
   this.textContent=muted?'🔇':'♪';};
 
 /* ---------- ตัวจัดการฉาก ---------- */
-const scenes=['s_intro','s_sun','s_cake','s_gift','s_card','s_reason','s_match','s_final'];
+const scenes=['s_intro','s_sun','s_cake','s_gift','s_card','s_wish','s_reason','s_match','s_final'];
 function show(id){scenes.forEach(s=>document.getElementById(s).classList.toggle('on',s===id));
   document.getElementById('replayBtn').style.display = id==='s_intro'?'none':'flex';
   document.querySelector('.stage').scrollTop=0;}
@@ -518,8 +568,8 @@ function chargeBack(){if(moonDone||charging)return;
   chargeP=Math.max(0,chargeP-0.05);setChargeUI();if(chargeP>0)requestAnimationFrame(chargeBack);}
 moonWrap.addEventListener('pointerdown',e=>{if(moonDone)return;
   try{moonWrap.setPointerCapture(e.pointerId);}catch(_){}
-  initAudio();if(actx&&actx.state==='suspended')actx.resume();sparkleSound();
-  charging=true;moonWrap.classList.add('charging');chargeTick();});
+  initAudio();if(actx&&actx.state==='suspended')actx.resume();sparkleSound();enableGyro();
+  moonWrap.style.transform='';charging=true;moonWrap.classList.add('charging');chargeTick();});
 function stopCharge(){if(moonDone||!charging)return;charging=false;moonWrap.classList.remove('charging');chargeBack();}
 moonWrap.addEventListener('pointerup',stopCharge);
 moonWrap.addEventListener('pointercancel',stopCharge);
@@ -578,13 +628,33 @@ document.getElementById('blowMicBtn').onclick=async function(){
 };
 
 /* 4) ของขวัญ */
+let twTimer=null;
+function typeWriter(el,text,speed){clearInterval(twTimer);el.textContent='';let i=0;
+  twTimer=setInterval(()=>{el.textContent=text.slice(0,++i);
+    if(i>=text.length)clearInterval(twTimer);},speed);
+  const card=el.closest('.card');
+  if(card)card.addEventListener('click',()=>{clearInterval(twTimer);el.textContent=text;},{once:true});}
 document.getElementById('gift').onclick=function(){sparkleSound();chime();burstConfetti(36);
   this.textContent='🎉';
-  document.getElementById('cardMsg').textContent=CFG.cardMsg+"\n\n"+CFG.giftReveal;
-  setTimeout(()=>show('s_card'),750);};
+  setTimeout(()=>{show('s_card');
+    typeWriter(document.getElementById('cardMsg'),CFG.cardMsg+"\n\n"+CFG.giftReveal,24);},760);};
 
-/* 5→6) เหตุผล */
-document.getElementById('toReasons').onclick=()=>show('s_reason');
+/* 5.5) ขอพรดาวตก */
+let wished=false;
+function startWish(){wished=false;const sky=document.getElementById('wishSky');sky.classList.remove('wished');
+  document.getElementById('wishMsg').textContent='หลับตา ตั้งใจอธิษฐาน แล้วแตะที่ท้องฟ้าเลยนะ';
+  document.getElementById('wishNext').style.display='none';}
+document.getElementById('toWish').onclick=()=>{show('s_wish');startWish();};
+document.getElementById('wishSky').addEventListener('pointerdown',function(){
+  if(wished)return;wished=true;this.classList.add('wished');
+  initAudio();if(actx&&actx.state==='suspended')actx.resume();chime();sparkleSound();
+  const r=this.getBoundingClientRect();
+  for(let i=0;i<10;i++)setTimeout(()=>popEmoji(r.left+Math.random()*r.width,r.top+Math.random()*r.height,'✨'),i*70);
+  document.getElementById('wishMsg').textContent='ขอให้ทุกคำอธิษฐานของแกงส้มเป็นจริงนะ 🌠 แล้วก็ขอมีเบลคอยอยู่ข้าง ๆ ด้วย';
+  document.getElementById('wishNext').style.display='inline-block';});
+document.getElementById('wishNext').onclick=()=>show('s_reason');
+
+/* 6) เหตุผล */
 let rIdx=-1,rCount=0;
 document.getElementById('reasonBtn').onclick=function(){let n;do{n=Math.floor(Math.random()*CFG.reasons.length);}
   while(CFG.reasons.length>1&&n===rIdx);rIdx=n;rCount++;
@@ -618,7 +688,7 @@ function matchWin(){chime();burstConfetti(90);releaseBalloons(12);playHBD();
   document.getElementById('matchInfo').textContent='เก่งมาก จับคู่ครบเลย 🎉';
   document.getElementById('finalMsg').innerHTML=CFG.finalMsgTpl+
     '<br><span class="subnote">เก่งมากเลยน้า จับคู่ครบทุกใบ 🎉 สุขสันต์วันเกิดอีกครั้งนะ 🤍</span>';
-  setTimeout(()=>show('s_final'),1400);}
+  setTimeout(()=>{show('s_final');startFireworks(8000);burstConfetti(60);},1400);}
 
 /* เอฟเฟกต์ลอย */
 function spawnFloat(txt){const el=document.createElement('div');el.className='float-emoji';el.textContent=txt;
