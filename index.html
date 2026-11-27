@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>สุขสันต์วันเกิดนะ แกงส้ม 🪿✨</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&family=Itim&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   สุขสันต์วันเกิดแกงส้ม 🪿 — ธีม "ดวงอาทิตย์ของวันจันทร์"
+   จันทร์ (เบล) × อาทิตย์ (แกงส้ม) · เหลือง-ส้ม-แดง
+   ============================================================ */
+:root{
+  --night-0:#0a0e27;--night-1:#141a3d;--night-2:#2a1f4d;
+  --sun:#ffd54a;--sun-2:#ff9f43;--red:#ff5b6e;--peach:#ffd9b0;
+  --ink:#4a3528;--cream:#fff7ec;--text:#fff;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;
+  -webkit-user-select:none;user-select:none}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Mali',system-ui,sans-serif;color:var(--text);position:fixed;inset:0;
+  background:var(--night-0);transition:background 2.5s ease}
+body.day{background:linear-gradient(180deg,#ffe29a 0%, #ffb86b 42%, #ff8e9e 78%, #ff6f87 100%)}
+canvas#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+
+.stage{position:fixed;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:26px;text-align:center}
+.scene{display:none;flex-direction:column;align-items:center;gap:6px;animation:pop .6s ease;max-width:560px;width:100%}
+.scene.on{display:flex}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+
+/* ---------- ฉากเปิด ---------- */
+#s_intro .moon{width:120px;height:120px;border-radius:50%;position:relative;cursor:pointer;
+  background:radial-gradient(circle at 36% 32%,#fff,#e7ecff 55%,#b9c3ef);
+  box-shadow:0 0 50px rgba(200,210,255,.6), inset -12px -8px 24px rgba(120,130,190,.35);
+  animation:floaty 4s ease-in-out infinite}
+#s_intro .moon .face{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:40px;filter:saturate(.9)}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.titlebig{font-weight:700;font-size:clamp(26px,7vw,40px);text-shadow:0 2px 20px rgba(0,0,0,.3);margin-top:18px}
+.sub{font-family:'Itim',cursive;font-size:clamp(15px,4.2vw,19px);opacity:.92;margin-top:4px}
+.tap-hint{font-family:'Itim',cursive;margin-top:20px;font-size:15px;opacity:.85;animation:blink 1.6s infinite}
+@keyframes blink{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* ดวงอาทิตย์ (ลาก/แตะให้ขึ้น) */
+#s_sun .sunwrap{position:relative;width:200px;height:200px;margin:8px auto}
+.sun{width:170px;height:170px;border-radius:50%;position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+  background:radial-gradient(circle at 40% 36%,#fff6cf,#ffd54a 50%,#ff9f43 100%);
+  box-shadow:0 0 60px rgba(255,170,70,.7), 0 0 120px rgba(255,120,80,.45)}
+.sun .duck{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:58px}
+.rays{position:absolute;left:50%;bottom:0;width:260px;height:260px;transform:translateX(-50%);
+  animation:spin 22s linear infinite;opacity:.0;transition:opacity 1s}
+.rays.show{opacity:.7}
+@keyframes spin{to{transform:translateX(-50%) rotate(360deg)}}
+.pulltrack{width:min(80vw,320px);height:8px;border-radius:10px;background:rgba(255,255,255,.25);
+  margin:14px auto 0;position:relative}
+.pullfill{height:100%;width:0;border-radius:10px;background:linear-gradient(90deg,var(--sun),var(--red))}
+.pulllabel{font-family:'Itim',cursive;margin-top:10px;font-size:15px;opacity:.9}
+
+/* ---------- เค้ก ---------- */
+.cake{position:relative;width:230px;height:170px;margin:6px auto}
+.plate{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:230px;height:26px;border-radius:50%;
+  background:radial-gradient(circle,#fff,#ffe3c4);box-shadow:0 10px 24px rgba(0,0,0,.25)}
+.tier{position:absolute;left:50%;transform:translateX(-50%);border-radius:16px}
+.tier.b{bottom:18px;width:190px;height:70px;background:linear-gradient(180deg,#ff9fb2,#ff6f87)}
+.tier.t{bottom:80px;width:140px;height:54px;background:linear-gradient(180deg,#ffe29a,#ffc85c)}
+.icing{position:absolute;left:50%;transform:translateX(-50%);height:16px;border-radius:12px;background:#fff7ec}
+.icing.b{bottom:78px;width:196px}.icing.t{bottom:130px;width:146px}
+.candle{position:absolute;bottom:130px;width:7px;height:30px;border-radius:3px;
+  background:repeating-linear-gradient(45deg,#ff6f87 0 6px,#fff 6px 12px)}
+.flame{position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:12px;height:18px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+  background:radial-gradient(circle at 50% 70%,#fff3b0,#ffb13b 55%,#ff7a2f);box-shadow:0 0 14px rgba(255,160,60,.9);
+  animation:flick .4s ease-in-out infinite alternate;transform-origin:bottom center}
+@keyframes flick{from{transform:translateX(-50%) rotate(-6deg) scaleY(.92)}to{transform:translateX(-50%) rotate(6deg) scaleY(1.06)}}
+.candle.out .flame{display:none}
+.candle.out::after{content:"";position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:4px;height:4px;
+  border-radius:50%;background:rgba(200,200,200,.6)}
+.mic-state{font-family:'Itim',cursive;font-size:14px;opacity:.9;margin-top:6px;min-height:20px}
+
+/* ---------- กล่องของขวัญ ---------- */
+.gift{font-size:92px;cursor:pointer;animation:floaty 3.4s ease-in-out infinite;filter:drop-shadow(0 8px 16px rgba(0,0,0,.3))}
+.gift:active{transform:scale(.92)}
+
+/* การ์ดข้อความ */
+.card{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(8px);
+  border-radius:24px;padding:24px 22px;max-width:440px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.card .msg{font-family:'Itim',cursive;font-size:clamp(16px,4.4vw,19px);line-height:2;white-space:pre-line}
+.sign{font-family:'Mali',cursive;font-weight:600;margin-top:14px;color:#fff}
+
+/* ปุ่ม */
+.btn{font-family:'Mali',sans-serif;font-weight:600;font-size:16px;color:#7a3b12;cursor:pointer;border:none;
+  border-radius:100px;padding:13px 30px;margin-top:20px;
+  background:linear-gradient(135deg,#fff0bd,#ffd36b);box-shadow:0 10px 26px rgba(255,170,70,.5);
+  transition:transform .25s}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:scale(.97)}
+.btn.ghost{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.5);box-shadow:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+/* ปุ่มมุม */
+.corner{position:fixed;z-index:12;top:14px;width:42px;height:42px;border-radius:50%;cursor:pointer;
+  background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff}
+#muteBtn{right:14px}#replayBtn{right:64px}
+
+/* เป็ดน้อยเดินล่าง */
+.duckwalk{position:fixed;bottom:12px;left:-60px;z-index:11;font-size:34px;pointer-events:none;
+  animation:walk 11s linear infinite}
+@keyframes walk{0%{left:-60px;transform:translateY(0)}50%{transform:translateY(-8px)}100%{left:105%;transform:translateY(0)}}
+
+/* เหตุผลที่รัก */
+.reason{font-family:'Itim',cursive;font-size:clamp(17px,4.6vw,20px);min-height:56px;max-width:22em;
+  color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.25);line-height:1.7}
+.counter{font-family:'Mali';font-weight:600;font-size:14px;opacity:.85;margin-top:4px}
+
+/* หัวใจบีบ */
+.heart{font-size:70px;cursor:pointer;transition:transform .08s;filter:drop-shadow(0 6px 14px rgba(255,80,110,.5))}
+.lovex{font-family:'Mali';font-weight:700;font-size:clamp(22px,7vw,34px);color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.25)}
+
+.float-emoji{position:fixed;z-index:9;pointer-events:none;font-size:26px;animation:floatUp 2.6s ease-out forwards}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.6)}15%{opacity:1}100%{opacity:0;transform:translateY(-220px) scale(1.1) rotate(20deg)}}
+.pop-emoji{position:fixed;z-index:14;pointer-events:none;font-size:30px;animation:popOut .9s ease-out forwards}
+@keyframes popOut{0%{opacity:1;transform:translate(-50%,-50%) scale(.4)}100%{opacity:0;transform:translate(-50%,-150%) scale(1.3)}}
+
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001s!important}}
+</style>
+</head>
+<body>
+<canvas id="sky"></canvas>
+
+<button class="corner" id="replayBtn" title="เริ่มใหม่" style="display:none">↻</button>
+<button class="corner" id="muteBtn" title="เสียง">🔈</button>
+
+<div class="stage">
+  <!-- 1) ฉากเปิด -->
+  <section class="scene on" id="s_intro">
+    <div class="moon" id="moon"><div class="face">🌙</div></div>
+    <div class="titlebig">สุขสันต์วันเกิดนะ 🪿✨</div>
+    <div class="sub">วันนี้วันเกิดเป็ดน้อยที่น่ารักที่สุดในโลก</div>
+    <div class="tap-hint" id="introHint">แตะพระจันทร์ เพื่อปลุกพระอาทิตย์ ☀️</div>
+  </section>
+
+  <!-- 2) พระอาทิตย์ขึ้น -->
+  <section class="scene" id="s_sun">
+    <div class="titlebig" style="font-size:clamp(22px,6vw,32px)">ปลุกพระอาทิตย์ของวันจันทร์ 🌙→☀️</div>
+    <div class="sunwrap">
+      <div class="rays" id="rays">☀️</div>
+      <div class="sun" id="sun" style="transform:translateX(-50%) translateY(70px) scale(.7)"><div class="duck">🪿</div></div>
+    </div>
+    <div class="pulltrack"><div class="pullfill" id="pullfill"></div></div>
+    <div class="pulllabel" id="pullLabel">ลากแถบ หรือกดค้าง ดันพระอาทิตย์ให้ขึ้น ✨</div>
+  </section>
+
+  <!-- 3) เค้ก เป่าเทียน -->
+  <section class="scene" id="s_cake">
+    <div class="titlebig" style="font-size:clamp(22px,6vw,30px)">เป่าเทียนด้วยกันนะ 🎂</div>
+    <div class="cake" id="cake">
+      <div class="plate"></div>
+      <div class="tier b"></div><div class="icing b"></div>
+      <div class="tier t"></div><div class="icing t"></div>
+      <!-- เทียนสร้างด้วย JS -->
+    </div>
+    <div class="mic-state" id="micState">กดปุ่มแล้ว "เป่า" ที่ไมค์ หรือกดเป่าเองก็ได้ 🕯️</div>
+    <div class="row">
+      <button class="btn" id="blowMicBtn">🎤 เป่าด้วยไมค์</button>
+      <button class="btn ghost" id="blowTapBtn">🫁 กดเป่าเลย</button>
+    </div>
+  </section>
+
+  <!-- 4) กล่องของขวัญ -->
+  <section class="scene" id="s_gift">
+    <div class="titlebig" style="font-size:clamp(22px,6vw,30px)">มีของขวัญให้ด้วยนะ 🎁</div>
+    <div class="gift" id="gift">🎁</div>
+    <div class="sub">แตะกล่องเพื่อเปิด 🪿</div>
+  </section>
+
+  <!-- 5) การ์ดอวยพร -->
+  <section class="scene" id="s_card">
+    <div class="card">
+      <div class="msg" id="cardMsg"></div>
+      <div class="sign">— รักที่สุดเลย, เบลค้าบบ 🫶</div>
+    </div>
+    <div class="row">
+      <button class="btn" id="toReasons">กดดูเหตุผลที่รักเป็ด 💛</button>
+    </div>
+  </section>
+
+  <!-- 6) สุ่มเหตุผลที่รัก -->
+  <section class="scene" id="s_reason">
+    <div class="titlebig" style="font-size:clamp(20px,5.5vw,28px)">เหตุผลที่เบลรักเป็ด 🪿💛</div>
+    <div class="reason" id="reasonText">กดปุ่มด้านล่างสิ ✨</div>
+    <div class="counter" id="reasonCount"></div>
+    <div class="row">
+      <button class="btn" id="reasonBtn">สุ่มอีกข้อ 💛</button>
+      <button class="btn ghost" id="toHeart">ต่อเลย 💗</button>
+    </div>
+  </section>
+
+  <!-- 7) บีบหัวใจ ทายรักกี่เท่า -->
+  <section class="scene" id="s_heart">
+    <div class="titlebig" style="font-size:clamp(20px,5.5vw,28px)">ทายสิ เบลรักเป็ดกี่เท่า? 💗</div>
+    <div class="lovex" id="loveX">×1</div>
+    <div class="heart" id="heart">💗</div>
+    <div class="sub" id="heartHint">แตะหัวใจรัว ๆ เลย!</div>
+    <div class="row">
+      <button class="btn" id="toFinal" style="display:none">สรุปแล้วรักเท่าไหร่ 🥺</button>
+    </div>
+  </section>
+
+  <!-- 8) ปิดท้าย -->
+  <section class="scene" id="s_final">
+    <div class="titlebig">สุขสันต์วันเกิดนะ เป็ดของเบลค้าบบ 🪿💗</div>
+    <div class="sub" id="finalMsg"></div>
+    <button class="btn" id="finalReplay">เล่นอีกรอบ ↻</button>
+  </section>
+</div>
+
+<script>
+/* ============================================================
+   แก้ข้อความได้ตรงนี้
+   ============================================================ */
+const CFG = {
+  bday: "1988-11-27",   // วันเกิดแกงส้ม (ค.ศ.)
+  cardMsg:
+`สุขสันต์วันเกิดนะ แกงส้มของเบลค้าบบ 🎂
+วันอาทิตย์ที่สว่างที่สุดในปฏิทินของเบลเลย ✨
+
+เบลเกิดวันจันทร์ เธอเกิดวันอาทิตย์ —
+เหมือนพระจันทร์กับพระอาทิตย์ ที่สุดท้ายก็โคจรมาเจอกัน 🌙☀️
+
+ขอให้ปีนี้ของเป็ดปังทุกเรื่อง เฮง ๆ รวย ๆ สุขภาพดี
+ยิ้มได้ทุกวัน เหมือนวันที่เบลได้เจอเธอครั้งแรก 😚
+
+แล้วก็... ขอแอบสั่งอีกข้อ (ห้ามต่อรองเหมือนเดิม):
+ให้เบลรักเธอมากขึ้นทุกวัน และให้เธอมีความสุขที่สุด 💗`,
+  giftReveal:"ของขวัญชิ้นนี้ให้คนพิเศษ… ส่วนหัวใจเบลไม่ต้องแกะ เพราะเป็นของเธออยู่แล้ว 🫶",
+  reasons:[
+    "รักที่เป็ดยิ้มแล้วโลกทั้งใบของเบลสว่างเลย ☀️",
+    "รักเสียงหัวเราะของเป็ด ฟังกี่ทีก็ไม่เบื่อ 🪿",
+    "รักที่เป็ดเป็นเป็ดตัวนี้… เป็ดของเบลคนเดียวเลย 💛",
+    "รักที่ได้คิดถึงเป็ดทุกวัน แม้แต่ตอนยุ่ง ๆ 🥺",
+    "รักที่เป็ดทำให้วันธรรมดา ๆ กลายเป็นวันพิเศษ ✨",
+    "รักความน่ารักของเป็ด ที่ไม่ต้องพยายามก็น่ารักอยู่แล้ว 😚",
+    "รักที่เป็ดอยู่ข้าง ๆ แล้วเบลรู้สึกเป็นตัวเองที่สุด 🫶",
+    "รักที่พระอาทิตย์ (เป็ด) มาเจอพระจันทร์ (เบล) พอดี 🌙☀️",
+    "รักที่อยากดูแลเป็ดไปนาน ๆ จนแก่เลย 👵👴",
+    "รักเป็ดเพราะ… ก็เป็ดอ่ะ ต้องมีเหตุผลด้วยเหรอ 💗"
+  ],
+  finalMsgTpl:"วันนี้เป็ดอายุ {age} ปีแล้วนะ 🎉 แต่ในสายตาเบล ยังน่ารักเหมือนเดิมทุกวันเลย 🥺🪿"
+};
+
+/* ---------- อายุ ---------- */
+function ageNow(){const b=new Date(CFG.bday+"T00:00:00"),n=new Date();
+  let a=n.getFullYear()-b.getFullYear();
+  const m=n.getMonth()-b.getMonth();if(m<0||(m===0&&n.getDate()<b.getDate()))a--;return a;}
+const AGE=ageNow();
+
+/* ---------- ท้องฟ้า canvas (ดาวกลางคืน + ลูกโป่ง/คอนเฟตติ) ---------- */
+const cv=document.getElementById('sky'),ctx=cv.getContext('2d');
+let W,H,DPR,stars=[],conf=[],balloons=[],t=0,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function resize(){DPR=Math.min(devicePixelRatio||1,2);W=cv.width=innerWidth*DPR;H=cv.height=innerHeight*DPR;
+  cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px';
+  stars=[];const n=Math.round(innerWidth*innerHeight/4000);
+  for(let i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H*.8,r:(Math.random()*1.1+.3)*DPR,
+    tw:Math.random()*6.28,sp:Math.random()*.02+.005});}
+addEventListener('resize',resize);resize();
+const CC=['#ffd54a','#ff9f43','#ff5b6e','#ff9fb2','#fff7ec','#ffe29a'];
+function burstConfetti(n){for(let i=0;i<n;i++)conf.push({x:Math.random()*W,y:-20,
+  vx:(Math.random()-.5)*4*DPR,vy:(Math.random()*3+2)*DPR,g:.08*DPR,
+  s:(Math.random()*6+4)*DPR,rot:Math.random()*6.28,vr:(Math.random()-.5)*.3,
+  c:CC[Math.floor(Math.random()*CC.length)],life:120+Math.random()*60});}
+function releaseBalloons(n){const E=['🎈','🪿','💛','🎈','🧡','🪿'];
+  for(let i=0;i<n;i++)balloons.push({x:Math.random()*innerWidth,y:innerHeight+40+Math.random()*120,
+    vy:-(Math.random()*1.0+1.1),sway:Math.random()*6.28,e:E[Math.floor(Math.random()*E.length)],
+    size:28+Math.random()*16});}
+let dayMode=false;
+(function loop(){t+=reduce?0:1;ctx.clearRect(0,0,W,H);
+  if(!dayMode){for(const s of stars){const tw=Math.sin(t*s.sp+s.tw)*.4+.6;
+    ctx.fillStyle="rgba(255,255,255,"+tw+")";ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,7);ctx.fill();}}
+  // confetti
+  conf.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.life--;
+    ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.fillStyle=p.c;
+    ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);ctx.restore();});
+  conf=conf.filter(p=>p.life>0&&p.y<H+40);
+  // balloons (วาดด้วย emoji บน canvas)
+  balloons.forEach(b=>{b.y+=b.vy;b.sway+=.03;const x=b.x+Math.sin(b.sway)*14;
+    ctx.font=(b.size*DPR)+'px serif';ctx.textAlign='center';ctx.fillText(b.e,x*DPR,b.y*DPR);});
+  balloons=balloons.filter(b=>b.y>-60);
+  requestAnimationFrame(loop);})();
+
+/* ---------- เสียง (สังเคราะห์เอง: เพลงวันเกิด + เอฟเฟกต์) ---------- */
+let actx,master,muted=false,musicTimer=null;
+function initAudio(){if(actx)return;try{actx=new (window.AudioContext||window.webkitAudioContext)();
+  master=actx.createGain();master.gain.value=.5;master.connect(actx.destination);}catch(e){}}
+function tone(freq,dur,type,vol,when){if(!actx||muted)return;const o=actx.createOscillator(),g=actx.createGain();
+  o.type=type||'sine';o.frequency.value=freq;o.connect(g);g.connect(master);
+  const s=(when||actx.currentTime);g.gain.setValueAtTime(0,s);
+  g.gain.linearRampToValueAtTime(vol||.3,s+.02);g.gain.exponentialRampToValueAtTime(.0001,s+dur);
+  o.start(s);o.stop(s+dur+.02);}
+// ทำนองวันเกิด (โน้ตเอง ไม่ใช่เนื้อร้อง) — Happy Birthday melody
+const HBD=[ [392,.5],[392,.5],[440,1],[392,1],[523,1],[494,2],
+  [392,.5],[392,.5],[440,1],[392,1],[587,1],[523,2],
+  [392,.5],[392,.5],[784,1],[659,1],[523,1],[494,1],[440,2],
+  [698,.5],[698,.5],[659,1],[523,1],[587,1],[523,2] ];
+function playHBD(){if(!actx)return;let when=actx.currentTime+.1;const bpm=.42;
+  HBD.forEach(([f,d])=>{tone(f,d*bpm*1.6,'triangle',.26,when);when+=d*bpm;});}
+function chime(){tone(880,.5,'sine',.3);tone(1320,.6,'sine',.2,actx&&actx.currentTime+.08);}
+function quack(){if(!actx||muted)return;const o=actx.createOscillator(),g=actx.createGain();
+  o.type='sawtooth';o.connect(g);g.connect(master);const s=actx.currentTime;
+  o.frequency.setValueAtTime(420,s);o.frequency.linearRampToValueAtTime(250,s+.16);
+  g.gain.setValueAtTime(.0001,s);g.gain.linearRampToValueAtTime(.25,s+.03);
+  g.gain.exponentialRampToValueAtTime(.0001,s+.2);o.start(s);o.stop(s+.22);}
+document.getElementById('muteBtn').onclick=function(){muted=!muted;if(master)master.gain.value=muted?0:.5;
+  this.textContent=muted?'🔇':'🔈';};
+
+/* ---------- ตัวจัดการฉาก ---------- */
+const scenes=['s_intro','s_sun','s_cake','s_gift','s_card','s_reason','s_heart','s_final'];
+function show(id){scenes.forEach(s=>document.getElementById(s).classList.toggle('on',s===id));
+  document.getElementById('replayBtn').style.display = id==='s_intro'?'none':'flex';}
+document.getElementById('replayBtn').onclick=()=>location.reload();
+document.getElementById('finalReplay').onclick=()=>location.reload();
+
+/* ---------- 1) intro → แตะพระจันทร์ ---------- */
+document.getElementById('moon').onclick=function(){initAudio();if(actx&&actx.state==='suspended')actx.resume();
+  quack();show('s_sun');};
+
+/* ---------- 2) ดันพระอาทิตย์ขึ้น ---------- */
+const sun=document.getElementById('sun'),pullfill=document.getElementById('pullfill'),
+      track=document.querySelector('.pulltrack');
+let sunP=0,holding=false,done2=false;
+function setSun(p){sunP=Math.max(0,Math.min(1,p));pullfill.style.width=(sunP*100)+'%';
+  const y=70-sunP*70, sc=.7+sunP*.3;
+  sun.style.transform='translateX(-50%) translateY('+y+'px) scale('+sc+')';
+  if(sunP>.55){document.body.classList.add('day');dayMode=true;document.getElementById('rays').classList.add('show');}
+  if(sunP>=1&&!done2){done2=true;document.getElementById('pullLabel').textContent='พระอาทิตย์ขึ้นแล้ว! เธอคือพระอาทิตย์ของวันจันทร์ของเบลนะ ☀️🪿';
+    chime();burstConfetti(60);
+    setTimeout(()=>show('s_cake'),1400);}}
+function trackSet(clientX){const r=track.getBoundingClientRect();setSun((clientX-r.left)/r.width);}
+track.addEventListener('pointerdown',e=>{trackSet(e.clientX);track.setPointerCapture(e.pointerId);holding=true;});
+track.addEventListener('pointermove',e=>{if(holding)trackSet(e.clientX);});
+addEventListener('pointerup',()=>holding=false);
+// กดค้างที่ไหนก็ได้ในฉากก็ดันขึ้น
+document.getElementById('s_sun').addEventListener('pointerdown',()=>{holdRaise=true;});
+addEventListener('pointerup',()=>holdRaise=false);
+let holdRaise=false;setInterval(()=>{if(holdRaise&&!done2)setSun(sunP+0.02);},40);
+
+/* ---------- 3) เค้ก + เทียน ---------- */
+const cake=document.getElementById('cake');
+const NC=Math.min(AGE,12); // เทียนไม่เกิน 12 เล่มให้สวย (อายุจริงโชว์ตอนจบ)
+let candles=[];
+(function buildCandles(){const spread=150,left=115-spread/2;
+  for(let i=0;i<NC;i++){const c=document.createElement('div');c.className='candle';
+    c.style.left=(left+ (NC>1? i*(spread/(NC-1)):spread/2))+'px';
+    c.innerHTML='<div class="flame"></div>';cake.appendChild(c);candles.push(c);}})();
+let blown=false;
+function blowOut(){if(blown)return;blown=true;
+  candles.forEach((c,i)=>setTimeout(()=>c.classList.add('out'),i*90));
+  document.getElementById('micState').textContent='เป่าติดแล้ว! 🎉 สุขสันต์วันเกิดน้าา';
+  initAudio();if(actx&&actx.state==='suspended')actx.resume();
+  setTimeout(()=>{burstConfetti(120);releaseBalloons(16);playHBD();},candles.length*90+200);
+  setTimeout(()=>show('s_gift'),2600);}
+document.getElementById('blowTapBtn').onclick=blowOut;
+document.getElementById('blowMicBtn').onclick=async function(){
+  const st=document.getElementById('micState');
+  try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    initAudio();const src=actx.createMediaStreamSource(stream);
+    const an=actx.createAnalyser();an.fftSize=512;src.connect(an);
+    const data=new Uint8Array(an.frequencyBinCount);st.textContent='เป่าที่ไมค์ได้เลย~ 🎤💨';
+    const chk=()=>{an.getByteFrequencyData(data);let sum=0;for(const v of data)sum+=v;
+      const avg=sum/data.length;
+      if(avg>42){stream.getTracks().forEach(t=>t.stop());blowOut();return;}
+      if(!blown)requestAnimationFrame(chk);};chk();
+  }catch(e){st.textContent='ไมค์ใช้ไม่ได้ กดเป่าเองได้เลยน้า 🫁';}
+};
+
+/* ---------- 4) กล่องของขวัญ ---------- */
+document.getElementById('gift').onclick=function(){quack();chime();burstConfetti(40);
+  this.textContent='🎉';
+  document.getElementById('cardMsg').textContent=CFG.cardMsg+"\n\n"+CFG.giftReveal;
+  setTimeout(()=>show('s_card'),700);};
+
+/* ---------- 5→6) เหตุผลที่รัก ---------- */
+document.getElementById('toReasons').onclick=()=>show('s_reason');
+let rIdx=-1,rCount=0;
+document.getElementById('reasonBtn').onclick=function(){let n;do{n=Math.floor(Math.random()*CFG.reasons.length);}
+  while(CFG.reasons.length>1&&n===rIdx);rIdx=n;rCount++;
+  document.getElementById('reasonText').textContent=CFG.reasons[n];
+  document.getElementById('reasonCount').textContent='ข้อที่ '+rCount+' 💛';
+  spawnFloat('💛');quack();};
+document.getElementById('toHeart').onclick=()=>show('s_heart');
+
+/* ---------- 7) บีบหัวใจ ---------- */
+let love=1;const heart=document.getElementById('heart'),loveX=document.getElementById('loveX');
+heart.addEventListener('pointerdown',e=>{love++;loveX.textContent='×'+love;
+  heart.style.transform='scale('+(1+Math.min(love*0.03,.8))+')';
+  popEmoji(e.clientX,e.clientY,'💗');if(love%4===0)quack();
+  if(love===1)initAudio();
+  if(love>=15){document.getElementById('heartHint').textContent='โอ้โห รักเยอะมาก! 🥺';
+    document.getElementById('toFinal').style.display='inline-block';}});
+document.getElementById('toFinal').onclick=function(){
+  document.getElementById('finalMsg').textContent=CFG.finalMsgTpl.replace('{age}',AGE)+
+    '  (วันนี้เบลกดรักให้ ×'+love+' เลยนะ 💗)';
+  burstConfetti(120);releaseBalloons(14);playHBD();show('s_final');};
+
+/* ---------- เอฟเฟกต์ลอย ---------- */
+function spawnFloat(txt){const el=document.createElement('div');el.className='float-emoji';el.textContent=txt;
+  el.style.left=(innerWidth/2-14+(Math.random()*120-60))+'px';el.style.top=(innerHeight*.5)+'px';
+  document.body.appendChild(el);setTimeout(()=>el.remove(),2600);}
+function popEmoji(x,y,txt){const el=document.createElement('div');el.className='pop-emoji';el.textContent=txt;
+  el.style.left=x+'px';el.style.top=y+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),900);}
+
+/* เป็ดเดินล่างเป็นระยะ */
+function walkDuck(){const d=document.createElement('div');d.className='duckwalk';d.textContent='🪿';
+  d.style.animationDuration=(9+Math.random()*4)+'s';document.body.appendChild(d);
+  setTimeout(()=>d.remove(),13000);}
+walkDuck();setInterval(walkDuck,7000);
+</script>
+</body>
+</html>
